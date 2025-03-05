@@ -5,6 +5,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
+import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -16,145 +17,158 @@ class ProfileScreen extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
         appBar: AppBar(
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                AssetsManager.shoppingCart,
-              ),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              AssetsManager.shoppingCart,
             ),
-            title: Text("Profile")), //AppBar je gornja traka
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Visibility(
-              visible: false,
-              child: Padding(
-                padding: EdgeInsets.all(18.0),
-                child: TitlesTextWidget(
-                    label: "Please login to have unlimited access"),
+          ),
+          title: AppNameTextWidget(
+            fontSize: 20,
+          ),
+        ), //AppBar je gornja traka
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Visibility(
+                visible: false,
+                child: Padding(
+                  padding: EdgeInsets.all(18.0),
+                  child: TitlesTextWidget(
+                      label: "Please login to have unlimited access"),
+                ),
               ),
-            ),
-            Visibility(
-              visible: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).cardColor,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.background,
-                          width: 3,
-                        ),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"),
-                          fit: BoxFit.fill,
+              Visibility(
+                visible: true,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).cardColor,
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.surface,
+                            width: 3,
+                          ),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"),
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitlesTextWidget(label: "Andjela LaLaLa"),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          SubtitleTextWidget(label: "test@test.com")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Divider(
+                      thickness: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const TitlesTextWidget(
+                      label: "General",
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    CustomListTile(
+                      text: "All Orders",
+                      imagePath: AssetsManager.orderSvg,
+                      function: () {},
+                    ),
+                    CustomListTile(
+                      text: "Wishlist",
+                      imagePath: AssetsManager.wishlistSvg,
+                      function: () {},
+                    ),
+                    CustomListTile(
+                      text: "Viewed Recently",
+                      imagePath: AssetsManager.recent,
+                      function: () {},
+                    ),
+                    CustomListTile(
+                      text: "Address",
+                      imagePath: AssetsManager.address,
+                      function: () {},
                     ),
                     SizedBox(
-                      width: 10,
+                      height: 10,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TitlesTextWidget(label: "Andjela LaLaLa"),
-                        SizedBox(
-                          height: 6,
+                    const Divider(
+                      thickness: 1,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    const TitlesTextWidget(
+                      label: "Settings",
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    SwitchListTile(
+                        secondary: Image.asset(
+                          AssetsManager.theme,
+                          height: 34,
                         ),
-                        SubtitleTextWidget(label: "test@test.com")
-                      ],
-                    )
+                        title: Text(themeProvider.getIsDarkTheme
+                            ? "Dark Mode"
+                            : "Light Mode"),
+                        value: themeProvider.getIsDarkTheme,
+                        onChanged: (value) {
+                          themeProvider.setDarkTheme(themeValue: value);
+                          log("Theme state ${themeProvider.getIsDarkTheme}");
+                        }),
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const TitlesTextWidget(
-                    label: "General",
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CustomListTile(
-                    text: "All Orders",
-                    imagePath: AssetsManager.orderSvg,
-                    function: () {},
-                  ),
-                  CustomListTile(
-                    text: "Wishlist",
-                    imagePath: AssetsManager.wishlistSvg,
-                    function: () {},
-                  ),
-                  CustomListTile(
-                    text: "Viewed Recently",
-                    imagePath: AssetsManager.recent,
-                    function: () {},
-                  ),
-                  CustomListTile(
-                    text: "Address",
-                    imagePath: AssetsManager.address,
-                    function: () {},
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  const Divider(
-                    thickness: 1,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  const TitlesTextWidget(
-                    label: "Settings",
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  SwitchListTile(
-                      secondary: Image.asset(
-                        AssetsManager.theme,
-                        height: 34,
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        30.0,
                       ),
-                      title: Text(themeProvider.getIsDarkTheme
-                          ? "Dark Mode"
-                          : "Light Mode"),
-                      value: themeProvider.getIsDarkTheme,
-                      onChanged: (value) {
-                        themeProvider.setDarkTheme(themeValue: value);
-                        log("Theme state ${themeProvider.getIsDarkTheme}");
-                      }),
-                ],
-              ),
-            ),
-            Center(
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      30.0,
                     ),
                   ),
+                  onPressed: () {},
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text("Login",
+                      style: TextStyle(color: Colors.white)),
                 ),
-                onPressed: () {},
-                icon: const Icon(Icons.login),
-                label: const Text("Login"),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
   }
 }
