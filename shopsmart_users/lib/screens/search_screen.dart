@@ -1,6 +1,8 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
+import 'package:shopsmart_users/widgets/products/product_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -51,16 +53,19 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
                   TextField(
                     controller: searchTextController,
                     decoration: InputDecoration(
                       hintText: "Search",
                       suffixIcon: GestureDetector(
                         onTap: () {
-                          setState(() {
-                            FocusScope.of(context).unfocus();
-                            searchTextController.clear();
-                          });
+                          // setState(() {
+                          FocusScope.of(context).unfocus();
+                          searchTextController.clear(); // posto pozivamo kontroler ne treba nam setState
+                          // });
                         },
                         child: Icon(
                           Icons.clear,
@@ -76,6 +81,19 @@ class _SearchScreenState extends State<SearchScreen> {
                       // ovdje se moze dodati logika za pretragu
                     },
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: DynamicHeightGridView(
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        builder: (context, index) {
+                          return const ProductWidget();
+                        },
+                        itemCount: 200,
+                        crossAxisCount: 2),
+                  ), //crossAxisCount - koliko cemo proizvoda prikazivati jedan pored drugog
                 ],
               ),
             )),
