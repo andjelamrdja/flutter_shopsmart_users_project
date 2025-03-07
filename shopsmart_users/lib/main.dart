@@ -4,6 +4,7 @@ import 'package:shopsmart_users/consts/theme_data.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
 import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/screens/auth/login.dart';
+import 'package:shopsmart_users/screens/auth/register.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
 import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
               WishlistScreen.routName: (context) => const WishlistScreen(),
               ViewedRecentlyScreen.routName: (context) =>
                   const ViewedRecentlyScreen(),
+              RegisterScreen.routName: (context) => const RegisterScreen(),
             });
       }),
     );

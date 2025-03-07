@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:shopsmart_users/consts/validator.dart';
+import 'package:shopsmart_users/screens/auth/register.dart';
 import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/auth/google_btn.dart';
@@ -16,6 +17,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool obscureText = true;
+
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
@@ -108,9 +111,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction
                           .done, // pokazuje koje ce dugme biti dostupno na tastaturi
                       keyboardType: TextInputType.visiblePassword,
+                      obscureText: obscureText,
+
                       decoration: InputDecoration(
-                        hintText: "Enter your password",
-                        prefixIcon: Icon(IconlyLight.message),
+                        hintText: "Enter password",
+                        prefixIcon: const Icon(
+                          IconlyLight.lock,
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              obscureText = !obscureText;
+                            });
+                          },
+                          icon: Icon(
+                            obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                       ),
                       onFieldSubmitted: (value) {
                         _loginFct();
@@ -173,9 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: SizedBox(
                               height: kBottomNavigationBarHeight,
-                              child: FittedBox(
-                                child: GoogleButton(),
-                              ),
+                              child: GoogleButton(),
                             ),
                           ),
                           SizedBox(
@@ -197,7 +214,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 child: const Text(
                                   "Guest?",
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 onPressed: () async {},
                               ),
@@ -217,12 +235,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         SubtitleTextWidget(label: "Don't have an account?"),
                         TextButton(
-                          onPressed: () {},
                           child: SubtitleTextWidget(
                             label: "Sign up",
                             fontStyle: FontStyle.italic,
                             textDecoration: TextDecoration.underline,
                           ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(RegisterScreen.routName);
+                          },
                         )
                       ],
                     ),
