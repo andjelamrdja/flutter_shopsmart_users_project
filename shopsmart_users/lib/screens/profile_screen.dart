@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
+import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
+import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
@@ -108,12 +111,17 @@ class ProfileScreen extends StatelessWidget {
                     CustomListTile(
                       text: "Wishlist",
                       imagePath: AssetsManager.wishlistSvg,
-                      function: () {},
+                      function: () {
+                        Navigator.pushNamed(context, WishlistScreen.routName);
+                      },
                     ),
                     CustomListTile(
                       text: "Viewed Recently",
                       imagePath: AssetsManager.recent,
-                      function: () {},
+                      function: () {
+                        Navigator.pushNamed(
+                            context, ViewedRecentlyScreen.routName);
+                      },
                     ),
                     CustomListTile(
                       text: "Address",
@@ -161,10 +169,16 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onPressed: () {},
                   icon: const Icon(Icons.login, color: Colors.white),
                   label: const Text("Login",
                       style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    MyAppFunctions.showErrorOrWarningDialog(
+                        context: context,
+                        subtitle: "Are you sure you want to logout",
+                        fct: () {},
+                        isError: false);
+                  },
                 ),
               ),
             ],

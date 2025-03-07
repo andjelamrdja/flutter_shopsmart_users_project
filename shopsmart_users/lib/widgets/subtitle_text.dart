@@ -16,7 +16,6 @@ class SubtitleTextWidget extends StatelessWidget {
   final FontWeight? fontWeight;
   final Color? color;
   final TextDecoration textDecoration;
-
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -25,7 +24,7 @@ class SubtitleTextWidget extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight,
         decoration: textDecoration,
-        color: null,
+        color: color,
         fontStyle: fontStyle,
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:shopsmart_users/consts/app_consts.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
+import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -49,10 +49,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                     ),
                   ),
                   Flexible(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(IconlyLight.heart),
-                    ),
+                    child: HeartButtonWidget(),
                   )
                 ],
               ),

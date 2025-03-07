@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/theme_data.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
 import 'package:shopsmart_users/root_screen.dart';
+import 'package:shopsmart_users/screens/auth/login.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
+import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
+import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,11 +29,14 @@ class MyApp extends StatelessWidget {
             title: 'Shop Smart',
             theme: Styles.themeData(
                 isDarkTheme: themeProvider.getIsDarkTheme, context: context),
-            home: const RootScreen(),
+            home: LoginScreen(),
             routes: {
               // na osnovu ovoga mozemo navigirati ka ostalim stranicama
               ProductDetailsScreen.routName: (context) =>
                   const ProductDetailsScreen(),
+              WishlistScreen.routName: (context) => const WishlistScreen(),
+              ViewedRecentlyScreen.routName: (context) =>
+                  const ViewedRecentlyScreen(),
             });
       }),
     );
