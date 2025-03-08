@@ -1,13 +1,18 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_consts.dart';
+import 'package:shopsmart_users/models/product_model.dart';
+import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
 class ProductWidget extends StatefulWidget {
-  const ProductWidget({super.key});
+  const ProductWidget({
+    super.key,
+  });
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
@@ -16,6 +21,8 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
+    final productModelProvider = Provider.of<ProductModel>(context);
+
     Size size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(0.0),
@@ -28,7 +35,7 @@ class _ProductWidgetState extends State<ProductWidget> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: FancyShimmerImage(
-                imageUrl: AppConstants.imageUrl,
+                imageUrl: productModelProvider.productImage,
                 height: size.height * 0.22,
                 width: double.infinity,
               ),
@@ -43,7 +50,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                   Flexible(
                     flex: 1,
                     child: TitlesTextWidget(
-                      label: "Title " * 10,
+                      label: productModelProvider.productTitle,
                       fontSize: 18,
                       maxLines: 2,
                     ),
@@ -63,7 +70,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                 Flexible(
                   flex: 1,
                   child: SubtitleTextWidget(
-                    label: "1550.00\$",
+                    label: "${productModelProvider.productPrice}\$",
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
                   ),

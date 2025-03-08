@@ -5,7 +5,6 @@ import 'package:shopsmart_users/consts/validator.dart';
 import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/screens/auth/forgot_password.dart';
 import 'package:shopsmart_users/screens/auth/register.dart';
-import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/auth/google_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
@@ -54,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginFct() async {
-    final isValid = _formkey.currentState!.validate();
+    // final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
   }
 

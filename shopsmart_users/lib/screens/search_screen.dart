@@ -1,5 +1,8 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users/models/product_model.dart';
+import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/product_widget.dart';
@@ -30,6 +33,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<ProductsProvider>(context);
+
     return Focus(
       autofocus: true,
       child: GestureDetector(
@@ -64,7 +69,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         onTap: () {
                           // setState(() {
                           FocusScope.of(context).unfocus();
-                          searchTextController.clear(); // posto pozivamo kontroler ne treba nam setState
+                          searchTextController
+                              .clear(); // posto pozivamo kontroler ne treba nam setState
                           // });
                         },
                         child: Icon(
@@ -86,13 +92,16 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   Expanded(
                     child: DynamicHeightGridView(
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                        builder: (context, index) {
-                          return const ProductWidget();
-                        },
-                        itemCount: 200,
-                        crossAxisCount: 2),
+                      itemCount: productsProvider.getProducts.length,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      builder: (context, index) {
+                        return ChangeNotifierProvider.value(
+                            value: productsProvider.getProducts[index],
+                            child: ProductWidget());
+                      },
+                    ),
                   ), //crossAxisCount - koliko cemo proizvoda prikazivati jedan pored drugog
                 ],
               ),

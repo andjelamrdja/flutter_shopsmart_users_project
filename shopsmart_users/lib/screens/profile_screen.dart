@@ -9,7 +9,6 @@ import 'package:shopsmart_users/screens/inner_screens/orders/orders_screen.dart'
 import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
-import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';

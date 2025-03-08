@@ -61,7 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _registerFCT() async {
-    final isValid = _formkey.currentState!.validate();
+    // final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
   }
 
