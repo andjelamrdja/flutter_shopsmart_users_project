@@ -11,6 +11,7 @@ import 'package:shopsmart_users/screens/inner_screens/orders/orders_screen.dart'
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
 import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
+import 'package:shopsmart_users/screens/search_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
               OrdersScreenFree.routeName: (context) => const OrdersScreenFree(),
               ForgotPasswordScreen.routeName: (context) =>
                   const ForgotPasswordScreen(),
+              SearchScreen.routeName: (context) => const SearchScreen(),
             });
       }),
     );

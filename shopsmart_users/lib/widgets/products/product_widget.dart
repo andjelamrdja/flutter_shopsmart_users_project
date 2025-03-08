@@ -12,7 +12,9 @@ import 'package:shopsmart_users/widgets/title_text.dart';
 class ProductWidget extends StatefulWidget {
   const ProductWidget({
     super.key,
+    required this.productId,
   });
+  final String productId;
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
@@ -21,86 +23,91 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
-    final productModelProvider = Provider.of<ProductModel>(context);
-
+    // final productModelProvider = Provider.of<ProductModel>(context);
+    final productsProvider = Provider.of<ProductsProvider>(context);
+    final getCurrentProduct = productsProvider.findByProdId(widget.productId);
     Size size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: GestureDetector(
-        onTap: () async {
-          await Navigator.pushNamed(context, ProductDetailsScreen.routName);
-        },
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: FancyShimmerImage(
-                imageUrl: productModelProvider.productImage,
-                height: size.height * 0.22,
-                width: double.infinity,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: Row(
+    return getCurrentProduct == null
+        ? const SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: GestureDetector(
+              onTap: () async {
+                await Navigator.pushNamed(
+                    context, ProductDetailsScreen.routName,
+                    arguments: getCurrentProduct.productId);
+              },
+              child: Column(
                 children: [
-                  Flexible(
-                    flex: 1,
-                    child: TitlesTextWidget(
-                      label: productModelProvider.productTitle,
-                      fontSize: 18,
-                      maxLines: 2,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: FancyShimmerImage(
+                      imageUrl: getCurrentProduct.productImage,
+                      height: size.height * 0.22,
+                      width: double.infinity,
                     ),
                   ),
-                  Flexible(
-                    child: HeartButtonWidget(),
-                  )
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: TitlesTextWidget(
+                            label: getCurrentProduct.productTitle,
+                            fontSize: 18,
+                            maxLines: 2,
+                          ),
+                        ),
+                        Flexible(
+                          child: HeartButtonWidget(),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: SubtitleTextWidget(
+                          label: "${getCurrentProduct.productPrice}\$",
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Flexible(
+                        child: Material(
+                          borderRadius: BorderRadius.circular(12.0),
+                          color: Colors.lightBlue,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            onTap: () {},
+                            splashColor: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                Icons.add_shopping_cart_outlined,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: SubtitleTextWidget(
-                    label: "${productModelProvider.productPrice}\$",
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Flexible(
-                  child: Material(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: Colors.lightBlue,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12.0),
-                      onTap: () {},
-                      splashColor: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Icon(
-                          Icons.add_shopping_cart_outlined,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
