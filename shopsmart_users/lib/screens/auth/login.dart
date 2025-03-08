@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:shopsmart_users/consts/validator.dart';
+import 'package:shopsmart_users/root_screen.dart';
+import 'package:shopsmart_users/screens/auth/forgot_password.dart';
 import 'package:shopsmart_users/screens/auth/register.dart';
 import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
@@ -10,6 +12,7 @@ import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = '/LoginScreen';
   const LoginScreen({super.key});
 
   @override
@@ -144,12 +147,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
                         child: SubtitleTextWidget(
                           label: "Forgot password?",
                           fontStyle: FontStyle.italic,
                           textDecoration: TextDecoration.underline,
                         ),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(ForgotPasswordScreen.routeName);
+                        },
                       ),
                     ),
                     SizedBox(
@@ -217,7 +223,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),
-                                onPressed: () async {},
+                                onPressed: () async {
+                                  Navigator.of(context)
+                                      .pushNamed(RootScreen.routeName);
+                                },
                               ),
                             ),
                           ),

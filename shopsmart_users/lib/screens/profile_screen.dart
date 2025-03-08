@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
+import 'package:shopsmart_users/screens/auth/login.dart';
+import 'package:shopsmart_users/screens/inner_screens/orders/orders_screen.dart';
 import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
@@ -106,7 +108,10 @@ class ProfileScreen extends StatelessWidget {
                     CustomListTile(
                       text: "All Orders",
                       imagePath: AssetsManager.orderSvg,
-                      function: () {},
+                      function: () {
+                        Navigator.of(context)
+                            .pushNamed(OrdersScreenFree.routeName);
+                      },
                     ),
                     CustomListTile(
                       text: "Wishlist",
@@ -173,11 +178,14 @@ class ProfileScreen extends StatelessWidget {
                   label: const Text("Login",
                       style: TextStyle(color: Colors.white)),
                   onPressed: () async {
-                    MyAppFunctions.showErrorOrWarningDialog(
-                        context: context,
-                        subtitle: "Are you sure you want to logout",
-                        fct: () {},
-                        isError: false);
+                    Navigator.of(context).pushNamed(LoginScreen.routeName);
+                    // OVO NEKA BUDE AKO JE ULOGOVAN VEC
+
+                    // MyAppFunctions.showErrorOrWarningDialog(
+                    //     context: context,
+                    //     subtitle: "Are you sure you want to logout",
+                    //     fct: () {},
+                    //     isError: false);
                   },
                 ),
               ),
