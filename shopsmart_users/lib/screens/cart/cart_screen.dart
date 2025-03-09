@@ -21,8 +21,7 @@ class CartScreen extends StatelessWidget {
             body: EmptyBagWidget(
                 imagePath: AssetsManager.shoppingBasket,
                 title: "Your cart is empty",
-                subtitle:
-                    "Looks like your cart is empty, you don't have any products yet",
+                subtitle: "Explore products in our shop",
                 buttonText: "Shop now"),
           )
         : Scaffold(

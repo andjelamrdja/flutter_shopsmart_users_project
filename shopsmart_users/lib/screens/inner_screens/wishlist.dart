@@ -30,17 +30,11 @@ class WishlistScreen extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back_ios, size: 20),
               ),
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                EmptyBagWidget(
-                    imagePath: AssetsManager.bagWish,
-                    title: "Nothing in your wishlist yet",
-                    subtitle:
-                        "Looks like your wishlist is empty, you don't have any liked products yet",
-                    buttonText: "Shop now"),
-              ],
-            ),
+            body: EmptyBagWidget(
+                imagePath: AssetsManager.bagWish,
+                title: "Nothing in your wishlist yet",
+                subtitle: "Looks like your wishlist is empty",
+                buttonText: "Shop now"),
           )
         : Scaffold(
             appBar: AppBar(
@@ -48,11 +42,13 @@ class WishlistScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RootScreen.routeName);
+                    // Navigator.pushNamed(context, RootScreen.routeName);
+                    Navigator.pop(context);
                   },
-                  child: Image.asset(
-                    AssetsManager.shoppingCart,
-                  ),
+                  // child: Image.asset(
+                  //   AssetsManager.shoppingCart,
+                  // ),
+                  child: const Icon(Icons.arrow_back_ios, size: 20),
                 ),
               ),
               title: TitlesTextWidget(

@@ -31,8 +31,7 @@ class ViewedRecentlyScreen extends StatelessWidget {
             body: EmptyBagWidget(
                 imagePath: AssetsManager.orderBag,
                 title: "No viewed products yet",
-                subtitle:
-                    "Looks like you haven't viewed any products yet, you can view products and they will be displayed here",
+                subtitle: "Looks like you haven't viewed any products yet",
                 buttonText: "Shop now"),
           )
         : Scaffold(
@@ -41,11 +40,13 @@ class ViewedRecentlyScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RootScreen.routeName);
+                    // Navigator.pushNamed(context, RootScreen.routeName);
+                    Navigator.pop(context);
                   },
-                  child: Image.asset(
-                    AssetsManager.shoppingCart,
-                  ),
+                  // child: Image.asset(
+                  //   AssetsManager.shoppingCart,
+                  // ),
+                  child: const Icon(Icons.arrow_back_ios, size: 20),
                 ),
               ),
               title: TitlesTextWidget(
