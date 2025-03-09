@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopsmart_users/screens/search_screen.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -52,8 +53,13 @@ class EmptyBagWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
-              onPressed: () {},
-              child: Text(buttonText),
+              onPressed: () {
+                Navigator.pushNamed(context, SearchScreen.routeName);
+              },
+              child: Text(
+                buttonText,
+                style: TextStyle(color: Colors.white),
+              ),
             )
           ],
         ),

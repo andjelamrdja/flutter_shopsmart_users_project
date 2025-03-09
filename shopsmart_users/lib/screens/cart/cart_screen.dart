@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users/screens/cart/cart_widget.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/empty_bag.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -12,7 +15,8 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+    final cartProvider = Provider.of<CartProvider>(context);
+    return cartProvider.getCartItems.isEmpty
         ? Scaffold(
             body: EmptyBagWidget(
                 imagePath: AssetsManager.shoppingBasket,
@@ -30,21 +34,43 @@ class CartScreen extends StatelessWidget {
                   AssetsManager.shoppingCart,
                 ),
               ),
-              title: const TitlesTextWidget(label: "Cart (6)"),
+              title: TitlesTextWidget(
+                  label: "Cart (${cartProvider.getCartItems.length})"),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MyAppFunctions.showErrorOrWarningDialog(
+                          isError: false,
+                          context: context,
+                          subtitle:
+                              "Are you sure you want to delete all items from cart?",
+                          fct: () {
+                            cartProvider.clearLocalCart();
+                          });
+                    },
                     icon: const Icon(
                       Icons.delete_forever_rounded,
                       color: Colors.red,
                     )),
               ],
             ),
-            body: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return CartWidget();
-                }),
+            body: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: cartProvider.getCartItems.length,
+                      itemBuilder: (context, index) {
+                        return ChangeNotifierProvider.value(
+                            value: cartProvider.getCartItems.values
+                                .toList()[index],
+                            child: CartWidget());
+                      }),
+                ),
+                SizedBox(
+                  height: kBottomNavigationBarHeight + 10,
+                ),
+              ],
+            ),
           );
   }
 }

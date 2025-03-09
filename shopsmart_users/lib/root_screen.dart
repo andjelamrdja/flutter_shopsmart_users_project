@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users/screens/home_screen.dart';
 import 'package:shopsmart_users/screens/profile_screen.dart';
@@ -32,6 +34,7 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       //Scaffold stavljamo zato sto je ovo jedan ekran
       body: PageView(
@@ -64,12 +67,12 @@ class _RootScreenState extends State<RootScreen> {
               selectedIcon: Badge(
                   backgroundColor: Colors.blue,
                   textColor: Colors.white,
-                  label: Text("6"),
+                  label: Text(cartProvider.getCartItems.length.toString()),
                   child: Icon(IconlyBold.bag2)),
               icon: Badge(
                   backgroundColor: Colors.blue,
                   textColor: Colors.white,
-                  label: Text("6"),
+                  label: Text(cartProvider.getCartItems.length.toString()),
                   child: Icon(IconlyLight.bag2)),
               label: 'Cart'),
           NavigationDestination(

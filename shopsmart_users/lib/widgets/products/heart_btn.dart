@@ -25,7 +25,7 @@ class _HeartButtonWidgetState extends State<HeartButtonWidget> {
         onPressed: () {},
         icon: Icon(
           IconlyLight.heart,
-          color: Colors.white,
+          color: Theme.of(context).iconTheme.color,
           size: widget.size,
         ),
       ),
