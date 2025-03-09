@@ -66,7 +66,9 @@ class CartWidget extends StatelessWidget {
                                   ),
                                   IconButton(
                                     onPressed: () {},
-                                    icon: HeartButtonWidget(),
+                                    icon: HeartButtonWidget(
+                                      productId: getCurrentProduct.productId,
+                                    ),
                                   ),
                                 ],
                               ),

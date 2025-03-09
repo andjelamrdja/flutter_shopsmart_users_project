@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/models/product_model.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/widgets/products/product_widget.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
@@ -52,8 +53,13 @@ class _SearchScreenState extends State<SearchScreen> {
             appBar: AppBar(
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  AssetsManager.shoppingCart,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, RootScreen.routeName);
+                  },
+                  child: Image.asset(
+                    AssetsManager.shoppingCart,
+                  ),
                 ),
               ),
               title:

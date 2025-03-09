@@ -1,9 +1,9 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopsmart_users/consts/app_consts.dart';
 import 'package:shopsmart_users/models/product_model.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
+import 'package:shopsmart_users/providers/viewed_recently_provider.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
@@ -16,11 +16,14 @@ class LatestArrivalProductsWidget extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     final productsModel = Provider.of<ProductModel>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final viewedProvider = Provider.of<ViewedRecentlyProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () async {
+          viewedProvider.addViewedProd(
+              productId: productsModel.productId);
           await Navigator.pushNamed(context, ProductDetailsScreen.routName,
               arguments: productsModel.productId);
         },
@@ -59,7 +62,9 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                     FittedBox(
                       child: Row(
                         children: [
-                          HeartButtonWidget(),
+                          HeartButtonWidget(
+                            productId: productsModel.productId,
+                          ),
                           IconButton(
                             onPressed: () {
                               if (cartProvider.isProductInCart(
