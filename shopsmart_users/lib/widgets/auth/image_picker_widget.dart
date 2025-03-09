@@ -1,28 +1,40 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickImageWidget extends StatelessWidget {
-  const PickImageWidget({super.key, this.pickedImage, required this.function});
-  final XFile? pickedImage;
+  const PickImageWidget(
+      {super.key, required this.function, required this.imageBytes});
+  // final XFile? pickedImage;
   final Function function;
+  final Uint8List? imageBytes;
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18.0),
-            child: pickedImage == null
+            child: imageBytes == null
                 ? Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                   )
-                : Image.file(File(pickedImage!.path), fit: BoxFit.fill),
+                // : Image.file(File(pickedImage!.path), fit: BoxFit.fill),
+                : Image.memory(
+                    imageBytes!, // Koristi Uint8List za prikaz slike
+                    height: size.width * 0.5,
+                    alignment: Alignment.center,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         Positioned(

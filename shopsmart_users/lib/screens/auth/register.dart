@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +29,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _emailFocusNode,
       _passwordFocusNode,
       _repeatPasswordFocusNode;
+
+  Uint8List? _imageBytes;
 
   final _formkey = GlobalKey<FormState>();
   XFile? _pickedImage;
@@ -72,12 +76,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
         cameraFCT: () async {
           _pickedImage =
               await imagePicker.pickImage(source: ImageSource.camera);
-          setState(() {});
+          // setState(() {});
+          if (_pickedImage != null) {
+            Uint8List bytes =
+                await _pickedImage!.readAsBytes(); // Pretvara sliku u Uint8List
+            setState(() {
+              _imageBytes = bytes;
+            });
+          }
         },
         galleryFCT: () async {
           _pickedImage =
               await imagePicker.pickImage(source: ImageSource.gallery);
-          setState(() {});
+          // setState(() {});
+          if (_pickedImage != null) {
+            Uint8List bytes =
+                await _pickedImage!.readAsBytes(); // Pretvara sliku u Uint8List
+            setState(() {
+              _imageBytes = bytes;
+            });
+          }
         },
         removeFCT: () {
           setState(() {
@@ -125,10 +143,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: size.width * 0.3,
                   width: size.width * 0.3,
                   child: PickImageWidget(
-                    pickedImage: _pickedImage,
+                    // pickedImage: _pickedImage,
                     function: () async {
                       await localImagePicker();
                     },
+                    imageBytes:
+                        _imageBytes, // ovdje sam dodala sliku koju smo pretvorili kako bi se mogla ucitati na webu
                   ),
                 ),
                 const SizedBox(

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 
 class AppConstants {
   static const String imageUrl =
@@ -14,4 +15,17 @@ class AppConstants {
     'Cosmetics',
     "Accessories",
   ];
+
+  static List<DropdownMenuItem<String>>? get categoriesDropdownList {
+    List<DropdownMenuItem<String>>? menuItem =
+        List<DropdownMenuItem<String>>.generate(
+      categoriesList.length,
+      (index) => DropdownMenuItem(
+        value: categoriesList[index],
+        child: Text(categoriesList[index]),
+      ),
+    );
+
+    return menuItem;
+  }
 }
