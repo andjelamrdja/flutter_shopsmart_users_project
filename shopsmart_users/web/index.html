@@ -19,6 +19,7 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
+  <meta name="google-signin-client_id" content="310981455793-61ggcc21u4ev68nhu86flvhbfo0nenn5.apps.googleusercontent.com">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -31,6 +32,26 @@
 
   <title>shopsmart_users</title>
   <link rel="manifest" href="manifest.json">
+  <!--dodavanje konfiguracije za firebase-->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2tb4IgcvVuY1ry-gCzDKvLWlbyJWlfcY",
+      authDomain: "shopsmart-1fba1.firebaseapp.com",
+      projectId: "shopsmart-1fba1",
+      storageBucket: "shopsmart-1fba1.firebasestorage.app",
+      messagingSenderId: "310981455793",
+      appId: "1:310981455793:web:7df17e056a26b63cf79790"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

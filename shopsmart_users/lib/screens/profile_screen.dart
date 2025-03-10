@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
@@ -12,13 +13,20 @@ import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 import 'package:shopsmart_users/screens/search_screen.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -181,18 +189,21 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  icon: const Icon(Icons.login, color: Colors.white),
-                  label: const Text("Login",
+                  icon: Icon(user == null ? Icons.login : Icons.logout,
+                      color: Colors.white),
+                  label: Text(user == null ? "Login" : "Logout",
                       style: TextStyle(color: Colors.white)),
                   onPressed: () async {
-                    Navigator.of(context).pushNamed(LoginScreen.routeName);
-                    // OVO NEKA BUDE AKO JE ULOGOVAN VEC
-
-                    // MyAppFunctions.showErrorOrWarningDialog(
-                    //     context: context,
-                    //     subtitle: "Are you sure you want to logout",
-                    //     fct: () {},
-                    //     isError: false);
+                    if (user == null) {
+                      Navigator.of(context).pushNamed(LoginScreen.routeName);
+                    } else {
+                      // OVO NEKA BUDE AKO JE ULOGOVAN VEC
+                      MyAppFunctions.showErrorOrWarningDialog(
+                          context: context,
+                          subtitle: "Are you sure you want to logout",
+                          fct: () {},
+                          isError: false);
+                    }
                   },
                 ),
               ),
