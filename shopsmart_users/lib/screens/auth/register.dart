@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shopsmart_users/consts/validator.dart';
 import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/screens/loading_manager.dart';
+import 'package:shopsmart_users/services/cloudinary_service.dart';
 import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/auth/image_picker_widget.dart';
@@ -40,6 +44,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? _pickedImage;
   bool _isLoading = false;
   final auth = FirebaseAuth.instance;
+  // final CloudinaryService _cloudinaryService = CloudinaryService();
+  String? userImageUrl;
   @override
   void initState() {
     _nameController = TextEditingController();
@@ -74,16 +80,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
+    if (_pickedImage == null) {
+      MyAppFunctions.showErrorOrWarningDialog(
+          context: context,
+          subtitle: "Make sure to pick up an image",
+          fct: () {});
+      return;
+    }
+
     if (isValid) {
       try {
         setState(() {
           _isLoading = true;
         });
 
+        // CloudinaryService cloudinaryService = CloudinaryService();
+        // String? imageUrl = await cloudinaryService.uploadImage(_imageBytes!);
+
         await auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         ); // omogucavamo korisniku da kreira nalog
+
+        final User? user = auth.currentUser;
+        final String uid = user!.uid;
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("users_images")
+            .child("${_emailController.text.trim()}.jpg");
+        // ref.putFile(File(_pickedImage!.path));  // ovo mi nije podrzano na webu
+        await ref.putData(_imageBytes!);
+        userImageUrl = await ref.getDownloadURL();
+        await FirebaseFirestore.instance.collection("users").doc(uid).set({
+          'userId': uid,
+          'userName': _nameController.text,
+          'userImage': userImageUrl,
+          'userEmail': _emailController.text,
+          'createdAt': Timestamp.now(),
+          'userWish': [],
+          'userCart': [],
+        });
+
         Fluttertoast.showToast(
           msg: "An account has been created",
           toastLength: Toast.LENGTH_SHORT,
