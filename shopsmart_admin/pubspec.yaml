@@ -59,6 +59,9 @@ dependencies:
   # google_sign_in: ^6.3.0
   firebase_storage: ^12.4.4
   firebase_storage_web: ^3.10.11
+  #toastify
+  fluttertoast: ^8.2.12
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

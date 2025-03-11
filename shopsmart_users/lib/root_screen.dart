@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
+import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users/screens/home_screen.dart';
 import 'package:shopsmart_users/screens/profile_screen.dart';
@@ -19,6 +22,7 @@ class _RootScreenState extends State<RootScreen> {
   late List<Widget> screens;
   int currentScreen = 0;
   late PageController controller;
+  bool isLoadingProd = true;
 
   @override
   void initState() {
@@ -30,6 +34,28 @@ class _RootScreenState extends State<RootScreen> {
       ProfileScreen(),
     ];
     controller = PageController(initialPage: currentScreen);
+  }
+
+  Future<void> fetchFCT() async {
+    final productProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
+
+    try {
+      // await productProvider.fetchProducts();
+      Future.wait({
+        productProvider.fetchProducts(),
+      }); // ako imamo dvije future functions koje se izvrsavaju nezavisno jedna od druge -> ovako ce se izvrsiti u isto vrijeme
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (isLoadingProd) {
+      fetchFCT();
+    }
+    super.didChangeDependencies();
   }
 
   @override

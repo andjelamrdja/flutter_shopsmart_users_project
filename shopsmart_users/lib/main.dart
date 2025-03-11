@@ -23,17 +23,17 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Firebase konfiguracija sa FirebaseOptions
-  const firebaseConfig = FirebaseOptions(
-    apiKey: "AIzaSyA2tb4IgcvVuY1ry-gCzDKvLWlbyJWlfcY",
-    authDomain: "shopsmart-1fba1.firebaseapp.com",
-    projectId: "shopsmart-1fba1",
-    storageBucket: "shopsmart-1fba1.firebasestorage.app",
-    messagingSenderId: "310981455793",
-    appId: "1:310981455793:web:7df17e056a26b63cf79790",
-  );
+  // const firebaseConfig = FirebaseOptions(
+  //   apiKey: "AIzaSyA2tb4IgcvVuY1ry-gCzDKvLWlbyJWlfcY",
+  //   authDomain: "shopsmart-1fba1.firebaseapp.com",
+  //   projectId: "shopsmart-1fba1",
+  //   storageBucket: "shopsmart-1fba1.firebasestorage.app",
+  //   messagingSenderId: "310981455793",
+  //   appId: "1:310981455793:web:7df17e056a26b63cf79790",
+  // );
 
   // Inicijalizacija Firebase-a sa FirebaseOptions
-  Firebase.initializeApp(options: firebaseConfig);
+  // Firebase.initializeApp(options: firebaseConfig);
 
   runApp(const MyApp());
 }
@@ -44,8 +44,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    const firebaseConfig = FirebaseOptions(
+      apiKey: "AIzaSyA2tb4IgcvVuY1ry-gCzDKvLWlbyJWlfcY",
+      authDomain: "shopsmart-1fba1.firebaseapp.com",
+      projectId: "shopsmart-1fba1",
+      storageBucket: "shopsmart-1fba1.firebasestorage.app",
+      messagingSenderId: "310981455793",
+      appId: "1:310981455793:web:7df17e056a26b63cf79790",
+    );
     return FutureBuilder<FirebaseApp>(
-        future: Firebase.initializeApp(),
+        future: Firebase.initializeApp(options: firebaseConfig),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return MaterialApp(
