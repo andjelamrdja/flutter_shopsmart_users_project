@@ -40,11 +40,17 @@ class _RootScreenState extends State<RootScreen> {
     final productProvider =
         Provider.of<ProductsProvider>(context, listen: false);
 
+    final cartProvider = Provider.of<ProductsProvider>(context, listen: false);
+
     try {
       // await productProvider.fetchProducts();
       Future.wait({
         productProvider.fetchProducts(),
       }); // ako imamo dvije future functions koje se izvrsavaju nezavisno jedna od druge -> ovako ce se izvrsiti u isto vrijeme
+      // a sta za korisnika i proizvode iz njegove korpe?
+      Future.wait({
+        cartProvider.fetchProducts(),
+      });
     } catch (error) {
       log(error.toString());
     }

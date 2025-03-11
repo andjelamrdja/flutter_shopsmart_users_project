@@ -7,6 +7,7 @@ import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/providers/viewed_recently_provider.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
@@ -97,13 +98,26 @@ class _ProductWidgetState extends State<ProductWidget> {
                           color: Colors.lightBlue,
                           child: InkWell(
                             borderRadius: BorderRadius.circular(12.0),
-                            onTap: () {
-                              if (cartProvider.isProductInCart(
-                                  productId: getCurrentProduct.productId)) {
-                                return;
+                            onTap: () async {
+                              try {
+                                if (cartProvider.isProductInCart(
+                                    productId: getCurrentProduct.productId)) {
+                                  return;
+                                }
+                                await cartProvider.addToCartFirebase(
+                                  productId: getCurrentProduct.productId,
+                                  quantity: 1,
+                                  context: context,
+                                );
+                              } catch (error) {
+                                await MyAppFunctions.showErrorOrWarningDialog(
+                                    context: context,
+                                    subtitle: error.toString(),
+                                    fct: () {});
                               }
-                              cartProvider.addProductToCart(
-                                  productId: getCurrentProduct.productId);
+
+                              // cartProvider.addProductToCart(
+                              //     productId: getCurrentProduct.productId);
                             },
                             splashColor: Colors.red,
                             child: Padding(

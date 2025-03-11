@@ -43,8 +43,9 @@ class CartScreen extends StatelessWidget {
                           context: context,
                           subtitle:
                               "Are you sure you want to delete all items from cart?",
-                          fct: () {
-                            cartProvider.clearLocalCart();
+                          fct: () async{
+                            // cartProvider.clearLocalCart();
+                            cartProvider.clearCartFromFirebase();
                           });
                     },
                     icon: const Icon(

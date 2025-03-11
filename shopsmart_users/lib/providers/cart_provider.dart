@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopsmart_users/models/cart_model.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:uuid/uuid.dart';
 
 class CartProvider with ChangeNotifier {
@@ -9,6 +13,107 @@ class CartProvider with ChangeNotifier {
     return _cartItems;
   }
 
+  final userDb = FirebaseFirestore.instance.collection("users");
+  final _auth = FirebaseAuth.instance;
+//Firebase
+  Future<void> addToCartFirebase(
+      {required String productId,
+      required int quantity,
+      required BuildContext context}) async {
+    final User? user = _auth.currentUser;
+    if (user == null) {
+      MyAppFunctions.showErrorOrWarningDialog(
+          context: context, subtitle: "Please login first", fct: () {});
+      return;
+    }
+    final uid = user.uid;
+    final cartId = Uuid().v4();
+    try {
+      await userDb.doc(uid).update({
+        'userCart': FieldValue.arrayUnion([
+          {
+            'cartId': cartId,
+            'productId': productId,
+            'quantity': quantity,
+          }
+        ]),
+      });
+      await fetchCart();
+      Fluttertoast.showToast(msg: "Item has been added");
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchCart() async {
+    final User? user = _auth.currentUser;
+    if (user == null) {
+      _cartItems.clear();
+      return;
+    }
+    try {
+      final userDoc = await userDb.doc(user.uid).get();
+      final data = userDoc.data();
+      if (data == null || !data.containsKey('userCart')) {
+        return;
+      }
+      final length = userDoc.get("userCart").length;
+      for (int index = 0; index < length; index++) {
+        _cartItems.putIfAbsent(
+          userDoc.get("userCart")[index]['productId'],
+          () => CartModel(
+              cartId: userDoc.get("userCart")[index]['cartId'],
+              productId: userDoc.get("userCart")[index]['productId'],
+              quantity: userDoc.get("userCart")[index]['quantity']),
+        );
+      }
+    } catch (error) {
+      rethrow;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> removeCartItemFromFirestore(
+      {required String cartId,
+      required String productId,
+      required int quantity}) async {
+    final User? user = _auth.currentUser;
+
+    try {
+      await userDb.doc(user!.uid).update({
+        'userCart': FieldValue.arrayRemove([
+          {
+            'cartId': cartId,
+            'productId': productId,
+            'quantity': quantity,
+          }
+        ]),
+      });
+      await fetchCart();
+      _cartItems.remove(productId);
+      Fluttertoast.showToast(msg: "Item has been removed");
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> clearCartFromFirebase() async {
+    final User? user = _auth.currentUser;
+
+    try {
+      await userDb.doc(user!.uid).update({
+        'userCart': [],
+      });
+      await fetchCart();
+      _cartItems.clear();
+      Fluttertoast.showToast(msg: "Cart has been cleared");
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+//local
   void addProductToCart({required String productId}) {
     _cartItems.putIfAbsent(
       productId,

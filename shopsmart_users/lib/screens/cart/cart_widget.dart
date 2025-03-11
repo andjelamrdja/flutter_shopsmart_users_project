@@ -57,18 +57,17 @@ class CartWidget extends StatelessWidget {
                                 children: [
                                   IconButton(
                                     onPressed: () {
-                                      cartProvider.clearOneItem(
-                                          productId:
-                                              getCurrentProduct.productId);
+                                      cartProvider.removeCartItemFromFirestore(
+                                        cartId: cartModel.cartId,
+                                        productId: getCurrentProduct.productId,
+                                        quantity: cartModel.quantity,
+                                      );
                                     },
                                     icon: const Icon(Icons.clear,
                                         color: Colors.red),
                                   ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: HeartButtonWidget(
-                                      productId: getCurrentProduct.productId,
-                                    ),
+                                  HeartButtonWidget(
+                                    productId: getCurrentProduct.productId,
                                   ),
                                 ],
                               ),

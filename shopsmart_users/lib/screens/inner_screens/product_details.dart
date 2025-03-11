@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
@@ -103,15 +104,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      if (cartProvider.isProductInCart(
+                                    onPressed: () async {
+                                      try {
+                                        if (cartProvider.isProductInCart(
+                                            productId:
+                                                getCurrentProduct.productId)) {
+                                          return;
+                                        }
+                                        await cartProvider.addToCartFirebase(
                                           productId:
-                                              getCurrentProduct.productId)) {
-                                        return;
+                                              getCurrentProduct.productId,
+                                          quantity: 1,
+                                          context: context,
+                                        );
+                                      } catch (error) {
+                                        await MyAppFunctions
+                                            .showErrorOrWarningDialog(
+                                                context: context,
+                                                subtitle: error.toString(),
+                                                fct: () {});
                                       }
-                                      cartProvider.addProductToCart(
-                                          productId:
-                                              getCurrentProduct.productId);
+
+                                      // cartProvider.addProductToCart(
+                                      //     productId:
+                                      //         getCurrentProduct.productId);
                                     },
                                     icon: Icon(
                                       cartProvider.isProductInCart(

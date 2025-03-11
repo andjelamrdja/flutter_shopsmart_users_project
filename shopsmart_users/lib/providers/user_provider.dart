@@ -21,7 +21,7 @@ class UserProvider with ChangeNotifier {
       final userDoc =
           await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
-      final userDocDict = userDoc.data() as Map<String, dynamic>?;
+      final userDocDict = userDoc.data();
       // kljucevi su uvijek string, a vrijednosti mogu biti razlicitih tipova (zato dynamic)
 
       userModel = UserModel(

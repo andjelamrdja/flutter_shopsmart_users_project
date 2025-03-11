@@ -36,7 +36,9 @@ class _SearchScreenState extends State<SearchScreen> {
   List<ProductModel> productListSearch = [];
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context);
+    final productsProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
+    //listen: false da se ne bi stranica ucitavala svaki put kad unesem promjenu (npr kad dodam proizvod u korpu na klik korpice)
     String? passedCategory =
         ModalRoute.of(context)!.settings.arguments as String?;
     List<ProductModel> productList = passedCategory == null
@@ -76,11 +78,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     stream: productsProvider.fetchProductsStream(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return MaterialApp(
-                          debugShowCheckedModeBanner: false,
-                          home: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
                       }
                       if (snapshot.hasError) {

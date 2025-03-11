@@ -5,6 +5,7 @@ import 'package:shopsmart_users/models/product_model.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/viewed_recently_provider.dart';
 import 'package:shopsmart_users/screens/inner_screens/product_details.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
@@ -22,8 +23,7 @@ class LatestArrivalProductsWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () async {
-          viewedProvider.addViewedProd(
-              productId: productsModel.productId);
+          viewedProvider.addViewedProd(productId: productsModel.productId);
           await Navigator.pushNamed(context, ProductDetailsScreen.routName,
               arguments: productsModel.productId);
         },
@@ -66,13 +66,26 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                             productId: productsModel.productId,
                           ),
                           IconButton(
-                            onPressed: () {
-                              if (cartProvider.isProductInCart(
-                                  productId: productsModel.productId)) {
-                                return;
+                            onPressed: () async {
+                              try {
+                                if (cartProvider.isProductInCart(
+                                    productId: productsModel.productId)) {
+                                  return;
+                                }
+                                await cartProvider.addToCartFirebase(
+                                  productId: productsModel.productId,
+                                  quantity: 1,
+                                  context: context,
+                                );
+                              } catch (error) {
+                                await MyAppFunctions.showErrorOrWarningDialog(
+                                    context: context,
+                                    subtitle: error.toString(),
+                                    fct: () {});
                               }
-                              cartProvider.addProductToCart(
-                                  productId: productsModel.productId);
+
+                              // cartProvider.addProductToCart(
+                              //     productId: productsModel.productId);
                             },
                             icon: Icon(cartProvider.isProductInCart(
                               productId: productsModel.productId,
