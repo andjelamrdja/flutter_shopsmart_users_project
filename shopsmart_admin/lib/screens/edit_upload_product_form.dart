@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shopsmart_admin/consts/app_constants.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/models/product_model.dart';
+import 'package:shopsmart_admin/providers/category_provider.dart';
 import 'package:shopsmart_admin/screens/loading_manager.dart';
 import 'package:shopsmart_admin/services/my_app_functions.dart';
 import 'package:uuid/uuid.dart';
@@ -56,6 +55,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
     _quantityController =
         TextEditingController(text: widget.productModel?.productQuantity);
 
+    Provider.of<CategoryProvider>(context, listen: false).fetchCategories();
+
     super.initState();
   }
 
@@ -69,12 +70,15 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   }
 
   void clearForm() {
-    _titleController.clear();
-    _priceController.clear();
-    _descriptionController.clear();
-    _quantityController.clear();
-    _categoryValue = null;
-    removePickedImage();
+    setState(() {
+      // Dodajemo setState da azurira UI
+      _titleController.clear();
+      _priceController.clear();
+      _descriptionController.clear();
+      _quantityController.clear();
+      _categoryValue = null; // Resetujemo kategoriju
+      removePickedImage();
+    });
   }
 
   void removePickedImage() {
@@ -289,6 +293,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categoryProvider = Provider.of<CategoryProvider>(context);
     final size = MediaQuery.of(context).size;
     return LoadingManager(
       isLoading: _isLoading,
@@ -455,15 +460,28 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-                  DropdownButton(
-                      items: AppConstants.categoriesDropdownList,
-                      value: _categoryValue,
-                      hint: Text("Choose a category"),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _categoryValue = value;
-                        });
-                      }),
+                  DropdownButton<String>(
+                    value: _categoryValue,
+                    hint: const Text("Choose category"),
+                    items: categoryProvider.getCategories.map((category) {
+                      return DropdownMenuItem<String>(
+                        value: category.name,
+                        child: Text(category.name),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _categoryValue = newValue;
+                      });
+                    },
+                  ),
+                  // CategoryDropdown(
+                  //   onCategorySelected: (String name) {
+                  //     setState(() {
+                  //       _categoryValue = name;
+                  //     });
+                  //   },
+                  // ),
                   const SizedBox(
                     height: 25,
                   ),
@@ -483,7 +501,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.newline,
                             decoration: const InputDecoration(
-                              hintText: 'Product Title',
+                              // hintText: 'Product Title',
+                              labelText: 'Product Title',
                             ),
                             validator: (value) {
                               return MyValidators.uploadProdTexts(
@@ -510,7 +529,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                     ),
                                   ],
                                   decoration: const InputDecoration(
-                                      hintText: 'Price',
+                                      // hintText: 'Price',
+                                      labelText: 'Price',
                                       prefix: SubtitleTextWidget(
                                         label: "\$ ",
                                         color: Colors.blue,
@@ -537,7 +557,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                   keyboardType: TextInputType.number,
                                   key: const ValueKey('Quantity'),
                                   decoration: const InputDecoration(
-                                    hintText: 'Qty',
+                                    // hintText: 'Qty',
+                                    labelText: 'Quantity',
                                   ),
                                   validator: (value) {
                                     return MyValidators.uploadProdTexts(
@@ -558,8 +579,8 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                             maxLength: 1000,
                             textCapitalization: TextCapitalization.sentences,
                             decoration: const InputDecoration(
-                              hintText: 'Product description',
-                            ),
+                                // hintText: 'Product description',
+                                labelText: 'Product description'),
                             validator: (value) {
                               return MyValidators.uploadProdTexts(
                                 value: value,

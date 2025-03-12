@@ -17,7 +17,6 @@ class OrdersScreenFree extends StatefulWidget {
 }
 
 class _OrdersScreenFreeState extends State<OrdersScreenFree> {
-  bool isEmptyOrders = false;
   @override
   Widget build(BuildContext context) {
     final ordersProvider = Provider.of<OrderProvider>(context);
@@ -52,11 +51,15 @@ class _OrdersScreenFreeState extends State<OrdersScreenFree> {
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                 child: OrdersWidgetFree(
-                    ordersModelAdvanced: ordersProvider.getOrders[index]),
+                  ordersModelAdvanced: ordersProvider.getOrders[index],
+                ),
               );
             },
             separatorBuilder: (BuildContext context, int index) {
-              return const Divider();
+              return const Divider(
+                thickness: 1,
+                color: Colors.grey,
+              );
             },
           );
         },

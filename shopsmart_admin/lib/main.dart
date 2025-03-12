@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_admin/providers/category_provider.dart';
+import 'package:shopsmart_admin/providers/orders_provider.dart';
+import 'package:shopsmart_admin/screens/edit_upload_category.dart';
 import 'package:shopsmart_admin/screens/edit_upload_product_form.dart';
+import 'package:shopsmart_admin/screens/inner_screen/view_all_categories.dart';
 
 import 'consts/theme_data.dart';
 import 'providers/products_provider.dart';
@@ -9,7 +13,6 @@ import 'providers/theme_provider.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/inner_screen/orders/orders_screen.dart';
 import 'screens/search_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +63,12 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) {
                 return ProductsProvider();
               }),
+              ChangeNotifierProvider(create: (_) {
+                return OrderProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return CategoryProvider();
+              }),
             ],
             child: Consumer<ThemeProvider>(
                 builder: (context, themeProvider, child) {
@@ -76,6 +85,10 @@ class MyApp extends StatelessWidget {
                   SearchScreen.routeName: (context) => const SearchScreen(),
                   EditOrUploadProductScreen.routeName: (context) =>
                       const EditOrUploadProductScreen(),
+                  EditOrUploadCategoryScreen.routeName: (context) =>
+                      const EditOrUploadCategoryScreen(),
+                  CategoriesScreen.routeName: (context) =>
+                      const CategoriesScreen(),
                 },
               );
             }),

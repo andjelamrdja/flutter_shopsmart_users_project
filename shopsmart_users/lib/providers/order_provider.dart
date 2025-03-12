@@ -16,7 +16,7 @@ class OrderProvider with ChangeNotifier {
       await FirebaseFirestore.instance
           .collection("ordersAdvanced")
           .where('userId', isEqualTo: uid)
-          .orderBy("orderDate", descending: false)
+          // .orderBy("orderDate", descending: false)
           .get()
           .then((orderSnapshot) {
         orders.clear();

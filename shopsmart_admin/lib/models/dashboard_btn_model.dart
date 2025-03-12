@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shopsmart_admin/screens/edit_upload_category.dart';
 import 'package:shopsmart_admin/screens/edit_upload_product_form.dart';
 import 'package:shopsmart_admin/screens/inner_screen/orders/orders_screen.dart';
+import 'package:shopsmart_admin/screens/inner_screen/view_all_categories.dart';
 import 'package:shopsmart_admin/screens/search_screen.dart';
 import 'package:shopsmart_admin/services/assets_manager.dart';
 
@@ -23,10 +25,24 @@ class DashboardButtonsModel {
           },
         ),
         DashboardButtonsModel(
+          text: "Add a new category",
+          imagePath: AssetsManager.cloud,
+          onPressed: () {
+            Navigator.pushNamed(context, EditOrUploadCategoryScreen.routeName);
+          },
+        ),
+        DashboardButtonsModel(
           text: "Inspect all products",
           imagePath: AssetsManager.shoppingCart,
           onPressed: () {
             Navigator.pushNamed(context, SearchScreen.routeName);
+          },
+        ),
+        DashboardButtonsModel(
+          text: "Inspect all categories",
+          imagePath: AssetsManager.shoppingCart,
+          onPressed: () {
+            Navigator.pushNamed(context, CategoriesScreen.routeName);
           },
         ),
         DashboardButtonsModel(
