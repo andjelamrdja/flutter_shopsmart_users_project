@@ -5,6 +5,8 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/providers/user_provider.dart';
+import 'package:shopsmart_users/providers/wishlist_provider.dart';
 import 'package:shopsmart_users/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users/screens/home_screen.dart';
 import 'package:shopsmart_users/screens/profile_screen.dart';
@@ -40,16 +42,24 @@ class _RootScreenState extends State<RootScreen> {
     final productProvider =
         Provider.of<ProductsProvider>(context, listen: false);
 
-    final cartProvider = Provider.of<ProductsProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final wishlistProvider =
+        Provider.of<WishlistProvider>(context, listen: false);
 
     try {
+      // ovo dodajemo za brza ucitavanja svih podataka pri pokretanju aplikacije
       // await productProvider.fetchProducts();
       Future.wait({
         productProvider.fetchProducts(),
+        userProvider.fetchUserInfo(),
       }); // ako imamo dvije future functions koje se izvrsavaju nezavisno jedna od druge -> ovako ce se izvrsiti u isto vrijeme
       // a sta za korisnika i proizvode iz njegove korpe?
       Future.wait({
-        cartProvider.fetchProducts(),
+        cartProvider.fetchCart(),
+      });
+      Future.wait({
+        wishlistProvider.fetchWishlist(),
       });
     } catch (error) {
       log(error.toString());

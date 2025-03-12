@@ -59,9 +59,9 @@ class WishlistScreen extends StatelessWidget {
                       MyAppFunctions.showErrorOrWarningDialog(
                           isError: false,
                           context: context,
-                          subtitle:
-                              "Are you sure you want to delete all items from wishlist?",
-                          fct: () {
+                          subtitle: "Clear Wishlist?",
+                          fct: () async {
+                            await wishlistProvider.clearWishlistFromFirebase();
                             wishlistProvider.clearLocalWishlist();
                           });
                     },

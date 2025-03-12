@@ -6,7 +6,8 @@ import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
 class CartBottomSheetWidget extends StatelessWidget {
-  const CartBottomSheetWidget({super.key});
+  const CartBottomSheetWidget({super.key, required this.function});
+  final Function function;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,9 @@ class CartBottomSheetWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue, // Plava pozadina
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  await function();
+                },
                 child: Text(
                   "Checkout",
                   style: TextStyle(

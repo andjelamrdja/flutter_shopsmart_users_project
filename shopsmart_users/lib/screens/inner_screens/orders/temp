@@ -1,0 +1,20 @@
+EmptyBagWidget(
+                imagePath: AssetsManager.orderBag,
+                title: "No orders has been placed yet",
+                subtitle: "",
+                buttonText: "Shop now")
+            : ListView.separated(
+                itemCount: 15,
+                itemBuilder: (ctx, index) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                    child: OrdersWidgetFree(),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider(
+                      // thickness: 8,
+                      // color: Colors.red,
+                      );
+                },
+              );
