@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopsmart_users/consts/validator.dart';
@@ -275,8 +274,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () async {
-                                    Navigator.of(context)
-                                        .pushNamed(RootScreen.routeName);
+                                    await FirebaseAuth.instance.signOut();
+                                    Navigator.of(context).pushNamed(RootScreen
+                                        .routeName); // ovdje dodati da se prethodni korisnik odjavi
                                   },
                                 ),
                               ),

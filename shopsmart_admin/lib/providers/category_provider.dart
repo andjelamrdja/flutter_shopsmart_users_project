@@ -2,13 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopsmart_admin/models/categories_model.dart';
+import 'package:shopsmart_admin/screens/edit_upload_category.dart';
 
 class CategoryProvider with ChangeNotifier {
   List<CategoriesModel> _categories = [];
-  List<CategoriesModel> get getCategories => _categories;
+  List<CategoriesModel> get getCategories {
+    return _categories;
+  }
 
   final userDb = FirebaseFirestore.instance.collection("users");
   // final _auth = FirebaseAuth.instance;
+
+  CategoriesModel? findByCategoryId(String categoryId) {
+    if (_categories
+        .where((element) => element.categoryId == categoryId)
+        .isEmpty) {
+      return null;
+    }
+    return _categories
+        .firstWhere((element) => element.categoryId == categoryId);
+  }
 
   Future<void> fetchCategories() async {
     try {
@@ -57,4 +70,6 @@ class CategoryProvider with ChangeNotifier {
       print("Error deleting category: $error");
     }
   }
+
+// EDIT AND UPLOAD
 }

@@ -88,7 +88,9 @@ class MyApp extends StatelessWidget {
                   EditOrUploadCategoryScreen.routeName: (context) =>
                       const EditOrUploadCategoryScreen(),
                   CategoriesScreen.routeName: (context) =>
-                      const CategoriesScreen(),
+                      const CategoriesScreen(
+                        categoryId: '',
+                      ),
                 },
               );
             }),

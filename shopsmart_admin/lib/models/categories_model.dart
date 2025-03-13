@@ -10,4 +10,6 @@ class CategoriesModel {
     required this.image,
     this.createdAt,
   });
+
+  get categoryId => null;
 }

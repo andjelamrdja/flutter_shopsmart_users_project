@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/providers/user_provider.dart';
 import 'package:shopsmart_users/providers/wishlist_provider.dart';
+import 'package:shopsmart_users/screens/auth/login.dart';
 import 'package:shopsmart_users/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users/screens/home_screen.dart';
 import 'package:shopsmart_users/screens/profile_screen.dart';
@@ -25,6 +27,7 @@ class _RootScreenState extends State<RootScreen> {
   int currentScreen = 0;
   late PageController controller;
   bool isLoadingProd = true;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -74,9 +77,29 @@ class _RootScreenState extends State<RootScreen> {
     super.didChangeDependencies();
   }
 
+  void checkUserAuth() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    // final user = FirebaseAuth.instance.currentUser;
+
+    // if (isLoading) {
+    //   return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    // }
+
+    // Ako korisnik NIJE prijavljen, preusmeri na login ekran
+    // if (user == null) {
+    //   return const LoginScreen();
+    // }
     return Scaffold(
       //Scaffold stavljamo zato sto je ovo jedan ekran
       body: PageView(

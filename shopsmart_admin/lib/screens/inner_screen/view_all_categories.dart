@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/providers/category_provider.dart';
 import 'package:shopsmart_admin/screens/edit_upload_category.dart';
+import 'package:shopsmart_admin/widgets/title_text.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/CategoriesScreen';
 
-  const CategoriesScreen({super.key});
-
+  const CategoriesScreen({super.key, required this.categoryId});
+  final String categoryId;
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
 }
@@ -24,43 +25,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryProvider = Provider.of<CategoryProvider>(context);
-    // return Scaffold(
-    //   appBar: AppBar(title: const Text("Categories")),
-    //   body: categoryProvider.getCategories.isEmpty
-    //       ? const Center(child: CircularProgressIndicator())
-    //       : ListView.builder(
-    //           itemCount: categoryProvider.getCategories.length,
-    //           itemBuilder: (context, index) {
-    //             final category = categoryProvider.getCategories[index];
-    //             return ListTile(
-    //               leading: category.image != null
-    //                   ? Image.network(category.image, width: 50, height: 50)
-    //                   : const Icon(Icons.category),
-    //               title: Text(category.name),
-    //               trailing: IconButton(
-    //                 icon: const Icon(Icons.delete, color: Colors.red),
-    //                 onPressed: () async {
-    //                   bool confirmDelete = await _showDeleteDialog(context);
-    //                   if (confirmDelete) {
-    //                     await categoryProvider.deleteCategory(category.id);
-    //                     setState(() {}); // Osvježavanje ekrana nakon brisanja
-    //                   }
-    //                 },
-    //               ),
-    //             );
-
-    //           },
-    //         ),
-    //   floatingActionButton: FloatingActionButton(
-    //     onPressed: () {
-    //       Navigator.pushNamed(context, EditOrUploadCategoryScreen.routeName);
-    //     },
-    //     child: const Icon(Icons.add),
-    //   ),
-    // );
+    final getCurrCategory =
+        categoryProvider.findByCategoryId(widget.categoryId);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Categories")),
+      appBar: AppBar(
+        title: TitlesTextWidget(label: "Categories"),
+      ),
       body: categoryProvider.getCategories.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -70,23 +41,42 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 itemBuilder: (context, index) {
                   final category = categoryProvider.getCategories[index];
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => EditOrUploadCategoryScreen(
+                      //       categoryModel: category,
+                      //     ),
+                      //   ),
+                      // );
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditOrUploadCategoryScreen(),
+                          builder: (context) => EditOrUploadCategoryScreen(
+                            categoryModel: category,
+                          ),
                         ),
                       );
+                      // Ako je korisnik sačuvao promene (Navigator.pop(context, true))
+                      if (result == true) {
+                        setState(() {
+                          categoryProvider
+                              .fetchCategories(); // Osveži listu kategorija
+                        });
+                      }
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        // color: Colors.white,
+                        color: Theme.of(context).colorScheme.background,
                         borderRadius:
                             BorderRadius.circular(15), // Lagano zaobljen okvir
-                        border:
-                            Border.all(color: Colors.grey.shade300, width: 1),
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            width: 1),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.05),
@@ -130,8 +120,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             if (confirmDelete) {
                               await categoryProvider
                                   .deleteCategory(category.id);
-                              setState(
-                                  () {}); // Osvježavanje ekrana nakon brisanja
+                              setState(() {
+                                categoryProvider.fetchCategories();
+                              }); // Osvježavanje ekrana nakon brisanja
                             }
                           },
                         ),
@@ -142,8 +133,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, EditOrUploadCategoryScreen.routeName);
+        onPressed: () async {
+          final bool? categoryAdded = await Navigator.pushNamed(
+            context,
+            EditOrUploadCategoryScreen.routeName,
+          ) as bool?;
+
+          if (categoryAdded == true) {
+            setState(() {
+              categoryProvider.fetchCategories();
+            });
+          }
+          // Navigator.pushNamed(context, EditOrUploadCategoryScreen.routeName);
+          // setState(() {
+          //   categoryProvider.fetchCategories();
+          // });
+
+          // neki drugi pokusaj:
+          // final result = await Navigator.pushNamed(
+          //     context, EditOrUploadCategoryScreen.routeName);
+
+          // if (result == true) {
+          //   // Ako se kategorija dodala, osvezi prikaz
+          //   setState(() {
+          //     categoryProvider.fetchCategories();
+          //   });
+          // }
         },
         child: const Icon(Icons.add),
       ),
