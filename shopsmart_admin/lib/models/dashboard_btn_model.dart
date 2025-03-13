@@ -51,6 +51,13 @@ class DashboardButtonsModel {
           onPressed: () {
             Navigator.pushNamed(context, OrdersScreenFree.routeName);
           },
+        ),
+        DashboardButtonsModel(
+          text: "Inspect all Users",
+          imagePath: AssetsManager.order,
+          onPressed: () {
+            Navigator.pushNamed(context, OrdersScreenFree.routeName);
+          },
         )
       ];
 }

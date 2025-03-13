@@ -23,9 +23,9 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
     final orderProvider = Provider.of<OrderProvider>(context);
 
     final size = MediaQuery.of(context).size;
-    return GestureDetector(
+
+    return ListTile(
       onTap: () {
-        // Navigacija na OrderDetailsScreen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -35,93 +35,148 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
           ),
         );
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: FancyShimmerImage(
-                height: size.width * 0.25,
-                width: size.width * 0.25,
-                imageUrl: widget.ordersModelAdvanced.imageUrl,
-              ),
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: TitlesTextWidget(
-                            label: widget.ordersModelAdvanced.productTitle,
-                            maxLines: 2,
-                            fontSize: 15,
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () async {
-                              String? userId =
-                                  await orderProvider.getUserIdByOrderId(
-                                      widget.ordersModelAdvanced.orderId);
-                              // omoguciti brisanje
-                              orderProvider.deleteOrderItemFromFirestore(
-                                orderId: widget.ordersModelAdvanced.orderId,
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.clear,
-                              color: Colors.red,
-                              size: 22,
-                            )),
-                      ],
+      title: TitlesTextWidget(
+        label: "Ordered by: ${widget.ordersModelAdvanced.userName}",
+        fontSize: 16,
+      ),
+      subtitle: SubtitleTextWidget(
+        label: "Order ID: ${widget.ordersModelAdvanced.orderId}",
+        fontSize: 14,
+        color: Colors.grey,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.clear, color: Colors.red),
+            onPressed: () async {
+              bool? confirmDelete = await showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Confirm Delete"),
+                  content:
+                      const Text("Are you sure you want to delete this order?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text("Cancel"),
                     ),
-                    Row(
-                      children: [
-                        TitlesTextWidget(
-                          label: 'Price:  ',
-                          fontSize: 15,
-                        ),
-                        Flexible(
-                          child: SubtitleTextWidget(
-                            label: "${widget.ordersModelAdvanced.price}\$",
-                            fontSize: 15,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    SubtitleTextWidget(
-                      label: "Qty: ${widget.ordersModelAdvanced.quantity}",
-                      fontSize: 15,
-                    ),
-                    SizedBox(height: 5),
-                    // 🔹 Prikaz korisnika koji je napravio porudžbinu
-                    SubtitleTextWidget(
-                      label:
-                          "Ordered by: ${widget.ordersModelAdvanced.userName}",
-                      fontSize: 15,
-                      color: Colors.green,
-                    ),
-                    SubtitleTextWidget(
-                      label: "User ID: ${widget.ordersModelAdvanced.userId}",
-                      fontSize: 12,
-                      color: Colors.grey,
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: const Text("Delete",
+                          style: TextStyle(color: Colors.red)),
                     ),
                   ],
                 ),
-              ),
-            ),
-          ],
-        ),
+              );
+
+              if (confirmDelete == true) {
+                await orderProvider
+                    .deleteOrder(widget.ordersModelAdvanced.orderId);
+              }
+            },
+          ),
+          const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blue),
+        ],
       ),
     );
+    // return GestureDetector(
+    //   onTap: () {
+    //     // Navigacija na OrderDetailsScreen
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => OrderDetailsScreen(
+    //           order: widget.ordersModelAdvanced,
+    //         ),
+    //       ),
+    //     );
+    //   },
+    //   child: Padding(
+    //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    //     child: Row(
+    //       children: [
+    //         ClipRRect(
+    //           borderRadius: BorderRadius.circular(12),
+    //           child: FancyShimmerImage(
+    //             height: size.width * 0.25,
+    //             width: size.width * 0.25,
+    //             imageUrl: widget.ordersModelAdvanced.imageUrl,
+    //           ),
+    //         ),
+    //         Flexible(
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(12.0),
+    //             child: Column(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 Row(
+    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                   children: [
+    //                     Flexible(
+    //                       child: TitlesTextWidget(
+    //                         label: widget.ordersModelAdvanced.productTitle,
+    //                         maxLines: 2,
+    //                         fontSize: 15,
+    //                       ),
+    //                     ),
+    //                     IconButton(
+    //                         onPressed: () async {
+    //                           String? userId =
+    //                               await orderProvider.getUserIdByOrderId(
+    //                                   widget.ordersModelAdvanced.orderId);
+    //                           // omoguciti brisanje
+    //                           orderProvider.deleteOrder(orderId);
+    //                         },
+    //                         icon: const Icon(
+    //                           Icons.clear,
+    //                           color: Colors.red,
+    //                           size: 22,
+    //                         )),
+    //                   ],
+    //                 ),
+    //                 Row(
+    //                   children: [
+    //                     TitlesTextWidget(
+    //                       label: 'Price:  ',
+    //                       fontSize: 15,
+    //                     ),
+    //                     Flexible(
+    //                       child: SubtitleTextWidget(
+    //                         label: "${widget.ordersModelAdvanced.price}\$",
+    //                         fontSize: 15,
+    //                         color: Colors.blue,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //                 const SizedBox(
+    //                   height: 5,
+    //                 ),
+    //                 SubtitleTextWidget(
+    //                   label: "Qty: ${widget.ordersModelAdvanced.quantity}",
+    //                   fontSize: 15,
+    //                 ),
+    //                 SizedBox(height: 5),
+    //                 // 🔹 Prikaz korisnika koji je napravio porudžbinu
+    //                 SubtitleTextWidget(
+    //                   label:
+    //                       "Ordered by: ${widget.ordersModelAdvanced.userName}",
+    //                   fontSize: 15,
+    //                   color: Colors.green,
+    //                 ),
+    //                 SubtitleTextWidget(
+    //                   label: "User ID: ${widget.ordersModelAdvanced.userId}",
+    //                   fontSize: 12,
+    //                   color: Colors.grey,
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }

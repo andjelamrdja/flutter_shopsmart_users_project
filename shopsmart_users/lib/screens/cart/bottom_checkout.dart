@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
+import 'package:shopsmart_users/providers/order_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
@@ -13,6 +14,7 @@ class CartBottomSheetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductsProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -51,6 +53,7 @@ class CartBottomSheetWidget extends StatelessWidget {
                 ),
                 onPressed: () async {
                   await function();
+                  // await orderProvider.placeOrder();
                 },
                 child: Text(
                   "Checkout",

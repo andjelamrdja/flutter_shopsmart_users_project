@@ -27,7 +27,7 @@ class _OrdersScreenFreeState extends State<OrdersScreenFree> {
         ),
       ),
       body: FutureBuilder<List<OrdersModelAdvanced>>(
-        future: ordersProvider.fetchOrder(),
+        future: ordersProvider.fetchOrders(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -51,7 +51,7 @@ class _OrdersScreenFreeState extends State<OrdersScreenFree> {
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                 child: OrdersWidgetFree(
-                  ordersModelAdvanced: ordersProvider.getOrders[index],
+                  ordersModel: ordersProvider.getOrders[index],
                 ),
               );
             },
