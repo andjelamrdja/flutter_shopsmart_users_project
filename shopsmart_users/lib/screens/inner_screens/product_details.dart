@@ -26,6 +26,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final getCurrentProduct = productsProvider.findByProdId(productId!);
     final cartProvider = Provider.of<CartProvider>(context);
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

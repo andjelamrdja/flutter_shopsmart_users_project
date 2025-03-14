@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/models/order_model.dart';
+import 'package:shopsmart_admin/models/product_model.dart';
 import 'package:shopsmart_admin/providers/orders_provider.dart';
 import 'package:shopsmart_admin/widgets/product_widget.dart';
 import '../../../widgets/subtitle_text.dart';
@@ -44,14 +46,20 @@ class OrderDetailsScreen extends StatelessWidget {
               color: Colors.blue,
             ),
             const Divider(),
+            // TitlesTextWidget(
+            //   label: "Products in Order",
+            //   fontSize: 18,
+            // ),
+            // _buildOrderSection("Products in order", orderListIds),
+
+            const SizedBox(height: 10),
             TitlesTextWidget(
-              label: "Products in Order",
+              label: "Products in Order: ",
               fontSize: 18,
             ),
-            const SizedBox(height: 10),
-            ListTile(
-              title: Text("Order items length: ${order.orderItems.length}"),
-            ), // ovdje pokazuje da je lista = 0
+            SizedBox(
+              height: 10,
+            ),
             // Prikaz liste proizvoda u porudžbini
             Expanded(
               child: FutureBuilder<List<String>>(
@@ -257,5 +265,77 @@ class OrderDetailsScreen extends StatelessWidget {
     //     ),
     //   ),
     // );
+  }
+
+  Widget _buildOrderSection(String title, List<String> productIds) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        productIds.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "No products yet - productIds is Empty",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              )
+            : Column(
+                children: productIds
+                    .map((productId) => _buildListItem(productId))
+                    .toList(),
+              ),
+      ],
+    );
+  }
+
+  Widget _buildListItem(String productId) {
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator()); // Dok se učitava
+        }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 5),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            child: ListTile(
+              contentPadding: EdgeInsets.all(12),
+              title: Text('Unknown Item', style: TextStyle(fontSize: 16)),
+            ),
+          );
+        }
+
+        ProductModel product = ProductModel.fromFirestore(snapshot.data!);
+
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 5),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
+          child: ListTile(
+            contentPadding: EdgeInsets.all(12),
+            leading: product.productImage.isNotEmpty
+                ? Image.network(product.productImage,
+                    width: 50, height: 50, fit: BoxFit.cover)
+                : Icon(Icons.image_not_supported), // Ako nema slike
+            title: Text(product.productTitle, style: TextStyle(fontSize: 16)),
+            subtitle: Text("Price: \$${product.productPrice}"),
+          ),
+        );
+      },
+    );
   }
 }

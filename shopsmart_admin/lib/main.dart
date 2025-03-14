@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/providers/category_provider.dart';
 import 'package:shopsmart_admin/providers/orders_provider.dart';
+import 'package:shopsmart_admin/providers/user_provider.dart';
 import 'package:shopsmart_admin/screens/edit_upload_category.dart';
 import 'package:shopsmart_admin/screens/edit_upload_product_form.dart';
+import 'package:shopsmart_admin/screens/inner_screen/users_screen.dart';
 import 'package:shopsmart_admin/screens/inner_screen/view_all_categories.dart';
 
 import 'consts/theme_data.dart';
@@ -69,6 +71,9 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) {
                 return CategoryProvider();
               }),
+              ChangeNotifierProvider(create: (_) {
+                return UserProvider();
+              }),
             ],
             child: Consumer<ThemeProvider>(
                 builder: (context, themeProvider, child) {
@@ -91,6 +96,7 @@ class MyApp extends StatelessWidget {
                       const CategoriesScreen(
                         categoryId: '',
                       ),
+                  UsersScreen.routeName: (context) => const UsersScreen(),
                 },
               );
             }),

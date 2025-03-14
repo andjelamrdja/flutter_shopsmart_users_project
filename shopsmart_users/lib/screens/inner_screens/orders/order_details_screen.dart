@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/models/order_model.dart';
 import 'package:shopsmart_users/providers/order_provider.dart';
+import 'package:shopsmart_users/widgets/products/product_widget.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -37,22 +38,49 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: order.orderItems.length,
-                itemBuilder: (context, index) {
-                  final product = order.orderItems[index];
-                  return Card(
-                    child: ListTile(
-                      leading: Image.network(product.imageUrl,
-                          width: 50, height: 50, fit: BoxFit.cover),
-                      title: Text(product.productTitle),
-                      subtitle: Text(
-                          "Quantity: ${product.quantity} - \$${product.price}"),
-                    ),
+              child: FutureBuilder<List<String>>(
+                future: Provider.of<OrderProvider>(context, listen: false)
+                    .fetchOrderProductIds(order.orderId), // Pozivamo funkciju
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text("No products in this order."));
+                  }
+
+                  final productIds = snapshot.data!;
+
+                  return ListView.builder(
+                    itemCount: productIds.length,
+                    itemBuilder: (context, index) {
+                      return ProductWidget(productId: productIds[index]);
+                    },
                   );
                 },
               ),
             ),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: order.orderItems.length,
+            //     itemBuilder: (context, index) {
+            //       final product = order.orderItems[index];
+            //       return Card(
+            //         child: ListTile(
+            //           leading: Image.network(product.imageUrl,
+            //               width: 50, height: 50, fit: BoxFit.cover),
+            //           title: Text(product.productTitle),
+            //           subtitle: Text(
+            //               "Quantity: ${product.quantity} - \$${product.price}"),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             const SizedBox(height: 20),
             Text(
               "Total Price: \$${order.totalPrice.toString()}",

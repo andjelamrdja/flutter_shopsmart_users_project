@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopsmart_admin/screens/edit_upload_category.dart';
 import 'package:shopsmart_admin/screens/edit_upload_product_form.dart';
 import 'package:shopsmart_admin/screens/inner_screen/orders/orders_screen.dart';
+import 'package:shopsmart_admin/screens/inner_screen/users_screen.dart';
 import 'package:shopsmart_admin/screens/inner_screen/view_all_categories.dart';
 import 'package:shopsmart_admin/screens/search_screen.dart';
 import 'package:shopsmart_admin/services/assets_manager.dart';
@@ -56,7 +57,7 @@ class DashboardButtonsModel {
           text: "Inspect all Users",
           imagePath: AssetsManager.order,
           onPressed: () {
-            Navigator.pushNamed(context, OrdersScreenFree.routeName);
+            Navigator.pushNamed(context, UsersScreen.routeName);
           },
         )
       ];

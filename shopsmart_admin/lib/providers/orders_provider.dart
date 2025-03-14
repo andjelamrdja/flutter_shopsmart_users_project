@@ -13,22 +13,48 @@ class OrderProvider with ChangeNotifier {
   // NOVE FUNKCIJE
 
   Future<List<String>> fetchOrderProductIds(String orderId) async {
+    // try {
+    //   final orderItemsSnapshot = await FirebaseFirestore.instance
+    //       .collection("ordersAdvanced")
+    //       .doc(orderId)
+    //       .collection("orderItems")
+    //       .get();
+
+    //   // Ako nema proizvoda, vraća praznu listu
+    //   if (orderItemsSnapshot.docs.isEmpty) {
+    //     return [];
+    //   }
+
+    //   // Ekstraktujemo samo productId iz svih stavki narudžbine
+    //   List<String> productIds = orderItemsSnapshot.docs.map((itemDoc) {
+    //     return itemDoc.get('productId').toString();
+    //   }).toList();
+
+    //   return productIds;
+    // } catch (error) {
+    //   debugPrint("Error fetching product IDs for order $orderId: $error");
+    //   return [];
+    // }
     try {
-      final orderItemsSnapshot = await FirebaseFirestore.instance
+      final orderDoc = await FirebaseFirestore.instance
           .collection("ordersAdvanced")
           .doc(orderId)
-          .collection("orderItems")
           .get();
 
-      // Ako nema proizvoda, vraća praznu listu
-      if (orderItemsSnapshot.docs.isEmpty) {
+      if (!orderDoc.exists) {
+        print("Order $orderId not found!");
         return [];
       }
 
-      // Ekstraktujemo samo productId iz svih stavki narudžbine
-      List<String> productIds = orderItemsSnapshot.docs.map((itemDoc) {
-        return itemDoc.get('productId').toString();
-      }).toList();
+      final data = orderDoc.data();
+      if (data == null || !data.containsKey("orderItems")) {
+        print("No orderItems found for order: $orderId");
+        return [];
+      }
+
+      List<dynamic> items = data["orderItems"];
+      List<String> productIds =
+          items.map((item) => item["productId"].toString()).toList();
 
       return productIds;
     } catch (error) {
