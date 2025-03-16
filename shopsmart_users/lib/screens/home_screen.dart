@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_consts.dart';
 import 'package:shopsmart_users/models/categories_model.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
-import 'package:shopsmart_users/screens/profile_screen.dart';
-import 'package:shopsmart_users/screens/search_screen.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/ctg_rounded_widget.dart';

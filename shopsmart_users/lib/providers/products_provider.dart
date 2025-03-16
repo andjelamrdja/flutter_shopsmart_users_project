@@ -16,7 +16,7 @@ class ProductsProvider with ChangeNotifier {
     return products.firstWhere((element) => element.productId == productId);
   }
 
-   Future<ProductModel?> fetchProductById(String productId) async {
+  Future<ProductModel?> fetchProductById(String productId) async {
     // Prvo pokušavamo da pronađemo proizvod u postojećim podacima
     final existingProduct = findByProdId(productId);
     if (existingProduct != null) return existingProduct;
@@ -87,6 +87,15 @@ class ProductsProvider with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  List<ProductModel> getProductsByCategory(
+      String category, String currentProductId) {
+    return products
+        .where((prod) =>
+            prod.productCategory == category &&
+            prod.productId != currentProductId)
+        .toList();
   }
 
   // List<ProductModel> products = [

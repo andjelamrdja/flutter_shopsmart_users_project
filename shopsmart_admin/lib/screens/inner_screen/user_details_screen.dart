@@ -46,38 +46,38 @@ class UserDetailsScreen extends StatelessWidget {
             _buildListSection("User Wish List", wishListIds),
             _buildListSection("User Cart", cartListIds),
             SizedBox(height: 20),
-            FutureBuilder<List<OrdersModelAdvanced>>(
-              future: userProvider.getUserOrders(user.userId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
+            // FutureBuilder<List<OrdersModelAdvanced>>(
+            //   future: userProvider.getUserOrders(user.userId),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return Center(child: CircularProgressIndicator());
+            //     }
 
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child:
-                        Text("No orders found", style: TextStyle(fontSize: 16)),
-                  );
-                }
+            //     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            //       return Center(
+            //         child:
+            //             Text("No orders found", style: TextStyle(fontSize: 16)),
+            //       );
+            //     }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text("User Orders",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                    ),
-                    Column(
-                      children: snapshot.data!
-                          .map((order) => _buildOrderItem(order))
-                          .toList(),
-                    ),
-                  ],
-                );
-              },
-            ),
+            //     return Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Padding(
+            //           padding: const EdgeInsets.symmetric(vertical: 10),
+            //           child: Text("User Orders",
+            //               style: TextStyle(
+            //                   fontSize: 18, fontWeight: FontWeight.bold)),
+            //         ),
+            //         Column(
+            //           children: snapshot.data!
+            //               .map((order) => _buildOrderItem(order))
+            //               .toList(),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // ),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
@@ -178,40 +178,40 @@ class UserDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderItem(OrdersModelAdvanced order) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: ExpansionTile(
-        tilePadding: EdgeInsets.all(12),
-        title: Text("Order ID: ${order.orderId}",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Total: \$${order.totalPrice}",
-                style: TextStyle(fontSize: 14)),
-            Text("Date: ${order.orderDate.toDate()}",
-                style: TextStyle(fontSize: 12, color: Colors.grey)),
-          ],
-        ),
-        children: order.orderItems
-            .map((product) => _buildProductItem(product))
-            .toList(),
-      ),
-    );
-  }
+  // Widget _buildOrderItem(OrdersModelAdvanced order) {
+  //   return Card(
+  //     margin: EdgeInsets.symmetric(vertical: 5),
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //     elevation: 2,
+  //     child: ExpansionTile(
+  //       tilePadding: EdgeInsets.all(12),
+  //       title: Text("Order ID: ${order.orderId}",
+  //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //       subtitle: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text("Total: \$${order.totalPrice}",
+  //               style: TextStyle(fontSize: 14)),
+  //           Text("Date: ${order.orderDate.toDate()}",
+  //               style: TextStyle(fontSize: 12, color: Colors.grey)),
+  //         ],
+  //       ),
+  //       children: order.orderItems
+  //           .map((product) => _buildProductItem(product))
+  //           .toList(),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildProductItem(OrderItem product) {
-    return ListTile(
-      leading: Image.network(product.imageUrl,
-          width: 50, height: 50, fit: BoxFit.cover),
-      title: Text(product.productTitle,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-      subtitle: Text(
-          "Quantity: ${product.quantity} • Price: \$${product.price}",
-          style: TextStyle(fontSize: 12)),
-    );
-  }
+  // Widget _buildProductItem(OrderItem product) {
+  //   return ListTile(
+  //     leading: Image.network(product.imageUrl,
+  //         width: 50, height: 50, fit: BoxFit.cover),
+  //     title: Text(product.productTitle,
+  //         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+  //     subtitle: Text(
+  //         "Quantity: ${product.quantity} • Price: \$${product.price}",
+  //         style: TextStyle(fontSize: 12)),
+  //   );
+  // }
 }

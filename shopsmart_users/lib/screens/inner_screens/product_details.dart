@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/screens/search_screen.dart';
 import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
+import 'package:shopsmart_users/widgets/products/similar_products_tile.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
 
@@ -26,13 +28,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final getCurrentProduct = productsProvider.findByProdId(productId!);
     final cartProvider = Provider.of<CartProvider>(context);
     Size size = MediaQuery.of(context).size;
+    final similarProducts = productsProvider.getProductsByCategory(
+        getCurrentProduct!.productCategory, getCurrentProduct!.productId);
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context); // da se vrati na prethodni ekran
+            // Navigator.pop(context); // da se vrati na prethodni ekran
+            Navigator.pushNamed(context, SearchScreen.routeName);
           },
           icon: const Icon(Icons.arrow_back_ios, size: 20),
         ),
@@ -168,7 +173,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           height: 15,
                         ),
                         SubtitleTextWidget(
-                            label: getCurrentProduct.productDescription),
+                          label: getCurrentProduct.productDescription,
+                        ),
+                        const SizedBox(height: 10),
+                        // Align(
+                        //   alignment: Alignment.centerLeft,
+                        //   child: TitlesTextWidget(label: "Similar products"),
+                        // ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child:
+                                  TitlesTextWidget(label: "Similar products"),
+                            ),
+                            const SizedBox(height: 10),
+                            SimilarProductsTile(
+                                similarProducts: similarProducts),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),

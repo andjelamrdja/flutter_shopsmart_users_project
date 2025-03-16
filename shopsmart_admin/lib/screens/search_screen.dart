@@ -52,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
             //     AssetsManager.shoppingCart,
             //   ),
             // ),
-            title: TitlesTextWidget(label: passedCategory ?? "Search products"),
+            title: TitlesTextWidget(label: passedCategory ?? "All products"),
           ),
           body: StreamBuilder<List<ProductModel>>(
               stream: productsProvider.fetchProductsStream(),
