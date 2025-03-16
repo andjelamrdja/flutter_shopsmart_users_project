@@ -107,7 +107,7 @@ class CartProvider with ChangeNotifier {
       });
       await fetchCart();
       _cartItems.clear();
-      Fluttertoast.showToast(msg: "Cart has been cleared");
+      // Fluttertoast.showToast(msg: "Cart has been cleared");
     } catch (error) {
       rethrow;
     }

@@ -39,10 +39,20 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
         label: "Ordered by: ${widget.ordersModelAdvanced.userName}",
         fontSize: 16,
       ),
-      subtitle: SubtitleTextWidget(
-        label: "Order ID: ${widget.ordersModelAdvanced.orderId}",
-        fontSize: 14,
-        color: Colors.grey,
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SubtitleTextWidget(
+            label: "Order ID: ${widget.ordersModelAdvanced.orderId}",
+            fontSize: 14,
+            color: Colors.grey, // Boja za Order ID
+          ),
+          SubtitleTextWidget(
+            label: "Date: ${widget.ordersModelAdvanced.orderDate.toDate()}",
+            fontSize: 14,
+            color: Colors.blue, // Boja za datum (promeni po želji)
+          ),
+        ],
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

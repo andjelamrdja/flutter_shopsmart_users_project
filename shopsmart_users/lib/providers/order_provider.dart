@@ -8,28 +8,6 @@ class OrderProvider with ChangeNotifier {
   List<OrdersModelAdvanced> get getOrders => orders;
 
   Future<List<String>> fetchOrderProductIds(String orderId) async {
-    // try {
-    //   final orderItemsSnapshot = await FirebaseFirestore.instance
-    //       .collection("ordersAdvanced")
-    //       .doc(orderId)
-    //       .collection("orderItems")
-    //       .get();
-
-    //   // Ako nema proizvoda, vraća praznu listu
-    //   if (orderItemsSnapshot.docs.isEmpty) {
-    //     return [];
-    //   }
-
-    //   // Ekstraktujemo samo productId iz svih stavki narudžbine
-    //   List<String> productIds = orderItemsSnapshot.docs.map((itemDoc) {
-    //     return itemDoc.get('productId').toString();
-    //   }).toList();
-
-    //   return productIds;
-    // } catch (error) {
-    //   debugPrint("Error fetching product IDs for order $orderId: $error");
-    //   return [];
-    // }
     try {
       final orderDoc = await FirebaseFirestore.instance
           .collection("ordersAdvanced")
@@ -56,7 +34,11 @@ class OrderProvider with ChangeNotifier {
       debugPrint("Error fetching product IDs for order $orderId: $error");
       return [];
     }
+
+    //
   }
+
+  
 
   // Future<void> placeOrder(
   //     String userId, String userName, List<OrderItem> cartItems) async {
@@ -207,5 +189,24 @@ class OrderProvider with ChangeNotifier {
     // } catch (error) {
     //   rethrow;
     // }
+  }
+
+  Future<int?> getOrderedQuantity(String orderId, String productId) async {
+    DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance
+        .collection('ordersAdvanced')
+        .doc(orderId)
+        .get();
+
+    if (orderSnapshot.exists) {
+      var data = orderSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> orderItems = data['orderItems'] ?? [];
+
+      for (var item in orderItems) {
+        if (item['productId'] == productId) {
+          return item['quantity']; // Vraća naručenu količinu
+        }
+      }
+    }
+    return null; // Ako proizvod nije pronađen u narudžbini
   }
 }

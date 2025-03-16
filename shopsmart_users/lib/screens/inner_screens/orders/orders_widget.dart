@@ -25,8 +25,22 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         title: Text("Order ID: ${widget.ordersModel.orderId}"),
-        subtitle:
-            Text("Total Price: \$${widget.ordersModel.totalPrice.toString()}"),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SubtitleTextWidget(
+              label: "Date: ${widget.ordersModel.orderDate.toDate()}",
+              fontSize: 14,
+              color: Colors.grey, // Boja za datum (promeni po želji)
+            ),
+            SubtitleTextWidget(
+              label:
+                  "Total Price: \$${widget.ordersModel.totalPrice.toString()}",
+              fontSize: 14,
+              color: Colors.blue, // Boja za Order ID
+            ),
+          ],
+        ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           Navigator.push(

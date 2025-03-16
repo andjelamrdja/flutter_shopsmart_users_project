@@ -16,6 +16,27 @@ class ProductsProvider with ChangeNotifier {
     return products.firstWhere((element) => element.productId == productId);
   }
 
+   Future<ProductModel?> fetchProductById(String productId) async {
+    // Prvo pokušavamo da pronađemo proizvod u postojećim podacima
+    final existingProduct = findByProdId(productId);
+    if (existingProduct != null) return existingProduct;
+
+    // Ako proizvod nije pronađen, dohvatimo ga iz Firestore-a
+    try {
+      DocumentSnapshot productDoc = await FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .get();
+
+      if (productDoc.exists) {
+        return ProductModel.fromFirestore(productDoc);
+      }
+    } catch (e) {
+      print("Error fetching product: $e");
+    }
+    return null;
+  }
+
   List<ProductModel> findByCategory({required String categoryName}) {
     List<ProductModel> categoryList = products
         .where((element) => element.productCategory

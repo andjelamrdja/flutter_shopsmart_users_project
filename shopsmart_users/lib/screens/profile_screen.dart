@@ -92,6 +92,9 @@ class _ProfileScreenState extends State<ProfileScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
                 Visibility(
                   visible: user == null ? true : false,
                   child: Padding(
@@ -143,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                       ),
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(14.0),

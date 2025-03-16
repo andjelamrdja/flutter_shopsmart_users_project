@@ -61,19 +61,14 @@ class _CartScreenState extends State<CartScreen> {
                 setState(() => _isLoading = true);
 
                 try {
-                  // await orderProvider.placeOrder(
-                  //   userProvider.userModel!.userId,
-                  //   userProvider.userModel!.userName,
-                  //   cartProvider.getCartItems.values.cast<OrderItem>().toList(),
-                  // );
                   await placeOrderAdvanced(
                     cartProvider: cartProvider,
                     productProvider: productProvider,
                     userProvider: userProvider,
                   );
 
-                  cartProvider
-                      .clearCartFromFirebase(); // Očisti korpu nakon uspešne narudžbine
+                  // cartProvider
+                  //     .clearCartFromFirebase(); // Očisti korpu nakon uspešne narudžbine
                 } catch (error) {
                   debugPrint("Failed to place order: $error");
                 } finally {
@@ -202,48 +197,5 @@ class _CartScreenState extends State<CartScreen> {
         _isLoading = false;
       });
     }
-    // final auth = FirebaseAuth.instance;
-    // User? user = auth.currentUser;
-    // if (user == null) {
-    //   return;
-    // }
-    // final uid = user.uid;
-    // try {
-    //   setState(() {
-    //     _isLoading = true;
-    //   });
-    //   cartProvider.getCartItems.forEach((key, value) async {
-    //     final getCurrProduct = productProvider.findByProdId(value.productId);
-    //     final orderId = Uuid().v4();
-    //     await FirebaseFirestore.instance
-    //         .collection("ordersAdvanced")
-    //         .doc(orderId)
-    //         .set({
-    //       'orderId': orderId,
-    //       'userId': uid,
-    //       'productId': value.productId,
-    //       "productTitle": getCurrProduct!.productTitle,
-    //       'price': double.parse(getCurrProduct.productPrice) * value.quantity,
-    //       'totalPrice':
-    //           cartProvider.getTotal(productsProvider: productProvider),
-    //       'quantity': value.quantity,
-    //       'imageUrl': getCurrProduct.productImage,
-    //       'userName': userProvider.getUserModel!.userName,
-    //       'orderDate': Timestamp.now(),
-    //     });
-    //   });
-    //   await cartProvider.clearCartFromFirebase();
-    //   cartProvider.clearLocalCart();
-    // } catch (error) {
-    //   await MyAppFunctions.showErrorOrWarningDialog(
-    //     context: context,
-    //     subtitle: error.toString(),
-    //     fct: () {},
-    //   );
-    // } finally {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // }
   }
 }

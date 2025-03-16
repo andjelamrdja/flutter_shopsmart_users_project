@@ -291,4 +291,22 @@ class OrderProvider with ChangeNotifier {
   //   }
   //   return null;
   // }
+  Future<int?> getOrderedQuantity(String orderId, String productId) async {
+    DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance
+        .collection('ordersAdvanced')
+        .doc(orderId)
+        .get();
+
+    if (orderSnapshot.exists) {
+      var data = orderSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> orderItems = data['orderItems'] ?? [];
+
+      for (var item in orderItems) {
+        if (item['productId'] == productId) {
+          return item['quantity']; // Vraća naručenu količinu
+        }
+      }
+    }
+    return null; // Ako proizvod nije pronađen u narudžbini
+  }
 }

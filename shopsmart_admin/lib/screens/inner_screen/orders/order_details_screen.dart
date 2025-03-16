@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/models/order_model.dart';
 import 'package:shopsmart_admin/models/product_model.dart';
 import 'package:shopsmart_admin/providers/orders_provider.dart';
+import 'package:shopsmart_admin/providers/products_provider.dart';
 import 'package:shopsmart_admin/widgets/product_widget.dart';
 import '../../../widgets/subtitle_text.dart';
 import '../../../widgets/title_text.dart';
@@ -40,6 +41,9 @@ class OrderDetailsScreen extends StatelessWidget {
               label: "Order ID: ${order.orderId}",
               fontSize: 16,
             ),
+            SizedBox(
+              height: 5,
+            ),
             SubtitleTextWidget(
               label: "Order Date: ${order.orderDate.toDate()}",
               fontSize: 16,
@@ -53,9 +57,38 @@ class OrderDetailsScreen extends StatelessWidget {
             // _buildOrderSection("Products in order", orderListIds),
 
             const SizedBox(height: 10),
-            TitlesTextWidget(
-              label: "Products in Order: ",
-              fontSize: 18,
+            // TitlesTextWidget(
+            //   label: "Products in Order: ",
+            //   fontSize: 18,
+            // ),
+            FutureBuilder<List<String>?>(
+              future: Provider.of<OrderProvider>(context, listen: false)
+                  .fetchOrderProductIds(order
+                      .orderId), // Nova metoda za dohvat proizvoda s količinama
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text("No products in this order."));
+                }
+
+                final productIds = snapshot.data!;
+                final totalProducts =
+                    productIds.length; // Broj različitih proizvoda
+                // final totalQuantity = productIds.fold(
+                //     0, (sum, item) => sum + item.quantity); // Ukupna količina
+
+                return Text(
+                  // "Products: $totalProducts products / $totalQuantity items",
+                  "Products in Order: $totalProducts",
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                );
+              },
             ),
             SizedBox(
               height: 10,
@@ -82,55 +115,73 @@ class OrderDetailsScreen extends StatelessWidget {
                   return ListView.builder(
                     itemCount: productIds.length,
                     itemBuilder: (context, index) {
-                      return ProductWidget(productId: productIds[index]);
+                      return FutureBuilder<ProductModel?>(
+                        future: Provider.of<ProductsProvider>(context,
+                                listen: false)
+                            .fetchProductById(productIds[
+                                index]), // Pretpostavljam da ovo vraća podatke o proizvodu
+                        builder: (context, productSnapshot) {
+                          if (productSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (productSnapshot.hasError ||
+                              !productSnapshot.hasData) {
+                            return const ListTile(
+                              title: Text("Error loading product"),
+                            );
+                          }
+
+                          final product = productSnapshot.data!;
+
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            child: ListTile(
+                              leading: Image.network(
+                                product.productImage,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                              title: Text(product.productTitle),
+                              subtitle: FutureBuilder<int?>(
+                                future: orderProvider.getOrderedQuantity(
+                                    order.orderId,
+                                    product.productId), // Dohvati quantity
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Text("Loading quantity...");
+                                  }
+                                  if (snapshot.hasError ||
+                                      snapshot.data == null) {
+                                    return Text(
+                                        "Quantity: Not available\nPrice: \$${product.productPrice}");
+                                  }
+                                  return Text(
+                                      "Quantity: ${snapshot.data}\nPrice: \$${product.productPrice}");
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                   );
                 },
               ),
             ),
 
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: order.orderItems.length,
-            //     itemBuilder: (context, index) {
-            //       final product = order.orderItems[index];
-            //       return ProductWidget(
-            //         productId: product.productId,
-            //       );
-
-            //       // return ListTile(
-            //       //   title: Text("Product ID: ${product.productId}"),
-            //       //   subtitle: Text("Product Quantity: ${product.quantity}"),
-            //       // );
-            //       // return Card(
-            //       //   elevation: 2,
-            //       //   margin: const EdgeInsets.symmetric(vertical: 8),
-            //       //   child: ListTile(
-            //       //     leading: ClipRRect(
-            //       //       borderRadius: BorderRadius.circular(8),
-            //       //       child: Image.network(
-            //       //         product.imageUrl,
-            //       //         width: 60,
-            //       //         height: 60,
-            //       //         fit: BoxFit.cover,
-            //       //       ),
-            //       //     ),
-            //       //     title: TitlesTextWidget(
-            //       //       label: product.productTitle,
-            //       //       fontSize: 16,
-            //       //     ),
-            //       //     subtitle: SubtitleTextWidget(
-            //       //       label:
-            //       //           "Price: \$${product.price} | Quantity: ${product.quantity}",
-            //       //       fontSize: 14,
-            //       //       color: Colors.grey,
-            //       //     ),
-            //       //   ),
-            //       // );
-            //     },
-            //   ),
-            // ),
-
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "Total Price: \$${order.totalPrice}",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
             // Dugme za brisanje porudžbine
             SizedBox(
               width: double.infinity,
