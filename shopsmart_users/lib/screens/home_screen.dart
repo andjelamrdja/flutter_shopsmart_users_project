@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AiAssistantScreen()),
+            MaterialPageRoute(builder: (context) => AIAssistant()),
           );
         },
         backgroundColor: Colors.blue,

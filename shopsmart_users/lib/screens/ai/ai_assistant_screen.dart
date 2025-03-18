@@ -1,139 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shopsmart_users/models/product_model.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
-import 'package:shopsmart_users/widgets/products/product_widget.dart';
-import 'package:shopsmart_users/widgets/title_text.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class AiAssistantScreen extends StatefulWidget {
+import 'package:shopsmart_users/widgets/products/product_widget.dart';
+
+class AIAssistant extends StatefulWidget {
   @override
-  _AiAssistantScreenState createState() => _AiAssistantScreenState();
+  _AIAssistantState createState() => _AIAssistantState();
 }
 
-class _AiAssistantScreenState extends State<AiAssistantScreen> {
-  final TextEditingController _inputController = TextEditingController();
-  List<ProductModel> _recommendedProducts = [];
-  bool _isLoading = false;
+class _AIAssistantState extends State<AIAssistant> {
+  final TextEditingController _controller = TextEditingController();
+  List<ProductModel> matchedProducts = [];
+  bool isLoading = false;
 
-  Future<void> getAiResponse(String userInput) async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> findMatchingProducts(BuildContext context) async {
+    setState(() => isLoading = true);
+    final productsProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
 
-    const String apiKey =
-        "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";
-    const String apiUrl = "https://api.openai.com/v1/chat/completions";
+    // Get available products
+    List<ProductModel> allProducts = productsProvider.getProducts;
 
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "Authorization": "Bearer $apiKey",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "model": "gpt-3.5-turbo", // or "gpt-3.5-turbo"
-          "messages": [
-            {
-              "role": "system",
-              "content":
-                  "You are a shopping assistant that recommends products based on user descriptions."
-            },
-            {"role": "user", "content": userInput}
-          ],
-          "temperature": 0.7
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        String aiResponse = data["choices"][0]["message"]["content"];
-        print("AI Response: $aiResponse");
-
-        // Fetch relevant products from Firebase based on AI response
-        await fetchRecommendedProducts(aiResponse);
-      } else {
-        print("AI Request Failed: ${response.body}");
-      }
-    } catch (e) {
-      print("Error: $e");
+    if (allProducts.isEmpty) {
+      await productsProvider.fetchProducts();
+      allProducts = productsProvider.getProducts;
     }
 
+    // Send the user request to Gemini AI
+    List<String> aiSuggestedKeywords =
+        await getGeminiResponse(_controller.text);
+
+    // Filter products based on AI-generated suggestions
+    List<ProductModel> filteredList = allProducts.where((product) {
+      return aiSuggestedKeywords.any((keyword) =>
+          product.productTitle.toLowerCase().contains(keyword.toLowerCase()) ||
+          product.productDescription
+              .toLowerCase()
+              .contains(keyword.toLowerCase()));
+    }).toList();
+
     setState(() {
-      _isLoading = false;
+      matchedProducts = filteredList;
+      isLoading = false;
     });
   }
 
-  Future<void> fetchRecommendedProducts(String searchQuery) async {
-    final productsProvider =
-        Provider.of<ProductsProvider>(context, listen: false);
-    await productsProvider.fetchProducts();
-    List<ProductModel> allProducts = productsProvider.getProducts;
+  // Call Google Gemini API
+  Future<List<String>> getGeminiResponse(String userQuery) async {
+    const String apiKey =
+        "AIzaSyAZKHyQE1i6kfx-w8ynTz99sYohaEJt-pQ"; // Replace with your API key
+    const String geminiUrl =
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent";
 
-    // Filter products that match AI response (simple search logic)
-    setState(() {
-      _recommendedProducts = allProducts.where((product) {
-        return product.productTitle
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase()) ||
-            product.productDescription
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase()) ||
-            product.productCategory
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase());
-      }).toList();
-    });
+    final response = await http.post(
+      Uri.parse('$geminiUrl?key=$apiKey'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text":
+                    "Ekstrahuj ključne reči iz sledećeg opisa i vrati ih kao JSON listu: ${_controller.text}"
+              }
+            ]
+          }
+        ]
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      List<String> keywords = jsonResponse['candidates'][0]['content']
+          .split(RegExp(r'\s+')) // Razdvaja reči po razmacima
+          .map((e) => e.toLowerCase())
+          .toList();
+      if (keywords.isEmpty) {
+        keywords = _controller.text.toLowerCase().split(RegExp(r'\s+'));
+      }
+
+      return keywords;
+    } else {
+      print("Error calling Gemini API: ${response.body}");
+      return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: TitlesTextWidget(label: "AI Shopping Assistant"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _inputController,
+      appBar: AppBar(title: Text("AI Assistant")),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                hintText: "Describe what you need...",
+                hintText: "Search for products...",
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    if (_inputController.text.isNotEmpty) {
-                      getAiResponse(_inputController.text);
-                    }
-                  },
+                  icon: Icon(Icons.search),
+                  onPressed: () => findMatchingProducts(context),
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            _isLoading ? CircularProgressIndicator() : Container(),
-            Expanded(
-              child: _recommendedProducts.isEmpty
-                  ? Center(child: Text("No products found"))
-                  : GridView.builder(
-                      padding: EdgeInsets.all(8),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Postavi broj kolona u gridu
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.7, // Podešavanje proporcija
-                      ),
-                      itemCount: _recommendedProducts.length,
-                      itemBuilder: (context, index) {
-                        final product = _recommendedProducts[index];
-                        return ProductWidget(productId: product.productId);
-                      },
-                    ),
-            ),
-          ],
-        ),
+          ),
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Expanded(
+                  child: matchedProducts.isEmpty
+                      ? Center(child: Text("No matching products found"))
+                      : ListView.builder(
+                          itemCount: matchedProducts.length,
+                          itemBuilder: (ctx, index) {
+                            return ProductWidget(
+                                productId: matchedProducts[index].productId);
+                          },
+                        ),
+                ),
+        ],
       ),
     );
   }
