@@ -4,6 +4,7 @@ import 'package:shopsmart_users/models/order_model.dart';
 import 'package:shopsmart_users/models/product_model.dart';
 import 'package:shopsmart_users/providers/order_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/widgets/title_text.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final OrdersModelAdvanced order;
@@ -15,7 +16,9 @@ class OrderDetailsScreen extends StatelessWidget {
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Order Details"),
+        title: const TitlesTextWidget(
+          label: 'Order details',
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

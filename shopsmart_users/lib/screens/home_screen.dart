@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_consts.dart';
 import 'package:shopsmart_users/models/categories_model.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/screens/ai/ai_assistant_screen.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/ctg_rounded_widget.dart';
@@ -153,6 +154,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ),
+      // ✅ AI Assistant Floating Button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AiAssistantScreen()),
+          );
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(
+          Icons.smart_toy,
+          size: 28,
+          color: Colors.white,
+        ), // AI Icon
       ),
     );
   }
