@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'package:shopsmart_users/widgets/title_text.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   static const routeName = '/UserDetailsScreen';
-  final UserModel user;
+  final UserModel? user;
 
   const UserDetailsScreen({super.key, required this.user});
 
@@ -20,8 +19,12 @@ class UserDetailsScreen extends StatefulWidget {
 }
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
+  // with ChangeNotifier {
   XFile? _pickedImage;
   String? userImageUrl;
+  String? userNetworkImage;
+  String? oldImage;
+
   Uint8List? _imageBytes;
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController userEmailController = TextEditingController();
@@ -31,15 +34,29 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   final TextEditingController newPasswordController = TextEditingController();
 
   // File? _selectedImage;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    userNameController.text = widget.user.userName;
-    userEmailController.text = widget.user.userEmail;
+    if (widget.user != null) {
+      // isEditing = true;
+      userImageUrl = widget.user!.userImage;
+      oldImage = widget.user!.userImage;
+    }
+    userNameController.text = widget.user!.userName;
+    userEmailController.text = widget.user!.userEmail;
     // userImageController.text = widget.user.userImage;
   }
+
+  // Future<void> _pickImage() async {
+  //   final ImagePicker picker = ImagePicker();
+  //   _pickedImage = await picker.pickImage(source: ImageSource.gallery);
+  //   if (_pickedImage != null) {
+  //     Uint8List bytes = await _pickedImage!.readAsBytes();
+  //     setState(() => _imageBytes = bytes);
+  //   }
+  // }
 
   Future<void> localImagePicker() async {
     final ImagePicker imagePicker = ImagePicker();
@@ -77,32 +94,18 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   }
 
   void updateUser() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      String currentPassword = currentPasswordController.text;
-      String? newPassword = newPasswordController.text.isNotEmpty
-          ? newPasswordController.text
-          : null;
-
-      // 🔹 Napravi ažurirani UserModel sa novim podacima
-      UserModel updatedUser = UserModel(
-        userId: widget.user.userId,
-        userName: userNameController.text,
-        userImage: _pickedImage != null
-            ? userImageUrl!
-            : widget.user.userImage, // da li to
-        userEmail: userEmailController.text,
-        createdAt: widget.user.createdAt,
-        userCart: widget.user.userCart,
-        userWish: widget.user.userWish,
+      await userProvider.updateUserInfo(
+        userId: widget.user!.userId,
+        newName: userNameController.text,
+        newEmail: userEmailController.text,
+        currentPassword: currentPasswordController.text,
+        newPassword: newPasswordController.text.isNotEmpty
+            ? newPasswordController.text
+            : null,
+        newImageBytes: _imageBytes,
       );
-
-      // 🔹 Prvo reautentifikuj korisnika
-      await Provider.of<UserProvider>(context, listen: false)
-          .reauthenticateUser(currentPassword);
-
-      // 🔹 Ažuriraj korisničke podatke i lozinku ako je uneta nova
-      await Provider.of<UserProvider>(context, listen: false)
-          .updateUserInfo(updatedUser, newPassword, _imageBytes);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("User updated successfully!")),
@@ -113,43 +116,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       );
     }
   }
-
-  // Future<void> _saveChanges() async {
-  //   final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-
-  //   try {
-  //     final updatedUser = UserModel(
-  //       userId: widget.user.userId,
-  //       userName: userNameController.text.trim(),
-  //       userEmail: userEmailController.text.trim(),
-  //       userImage: _pickedImage != null ? userImageUrl! : widget.user.userImage,
-  //       createdAt: widget.user.createdAt,
-  //       userCart: widget.user.userCart,
-  //       userWish: widget.user.userWish,
-  //     );
-
-  //     await userProvider.updateUserInfo(
-  //         updatedUser, newPasswordController.text, _imageBytes);
-
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("User updated successfully!")),
-  //     );
-
-  //     Navigator.pop(context);
-  //   } catch (error) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text("Error: ${error.toString()}")),
-  //     );
-  //   }
-
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
 
   Future<void> _verifyEmail() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -180,13 +146,23 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               // Profilna slika
               GestureDetector(
                 onTap: localImagePicker,
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: _pickedImage != null
-                      ? MemoryImage(_imageBytes!)
-                      : NetworkImage(widget.user.userImage) as ImageProvider,
-                  child: _pickedImage == null
-                      ? Icon(Icons.camera_alt, size: 30, color: Colors.white70)
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: _imageBytes != null
+                        ? DecorationImage(
+                            image: MemoryImage(_imageBytes!), fit: BoxFit.cover)
+                        : (userImageUrl != null
+                            ? DecorationImage(
+                                image: NetworkImage(userImageUrl!),
+                                fit: BoxFit.cover)
+                            : null),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: _imageBytes == null && userImageUrl == null
+                      ? Icon(Icons.add_a_photo, size: 40, color: Colors.grey)
                       : null,
                 ),
               ),

@@ -65,16 +65,6 @@ class _EditOrUploadCategoryScreenState
   Future<void> _editCategory() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    // final categoryProvider = Provider.of<CategoryProvider>(context);
-
-    // if (_pickedImage == null) {
-    //   MyAppFunctions.showErrorOrWarningDialog(
-    //     context: context,
-    //     subtitle: "Please pick an image",
-    //     fct: () {},
-    //   );
-    //   return;
-    // }
 
     if (isValid) {
       try {

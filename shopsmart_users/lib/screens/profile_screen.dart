@@ -9,13 +9,11 @@ import 'package:shopsmart_users/providers/theme_provider.dart';
 import 'package:shopsmart_users/providers/user_provider.dart';
 import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/screens/auth/login.dart';
-import 'package:shopsmart_users/screens/home_screen.dart';
 import 'package:shopsmart_users/screens/inner_screens/orders/orders_screen.dart';
 import 'package:shopsmart_users/screens/inner_screens/user_details_screen.dart';
 import 'package:shopsmart_users/screens/inner_screens/viewed_recently.dart';
 import 'package:shopsmart_users/screens/inner_screens/wishlist.dart';
 import 'package:shopsmart_users/screens/loading_manager.dart';
-import 'package:shopsmart_users/screens/search_screen.dart';
 import 'package:shopsmart_users/services/assets_manager.dart';
 import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
@@ -155,13 +153,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TitlesTextWidget(
-                                        label: userModel!.userName),
+                                    TitlesTextWidget(label: userModel.userName),
                                     SizedBox(
                                       height: 6,
                                     ),
                                     SubtitleTextWidget(
-                                        label: userModel!.userEmail),
+                                        label: userModel.userEmail),
                                   ],
                                 )
                               ],
