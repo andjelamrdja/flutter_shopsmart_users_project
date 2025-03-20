@@ -5,6 +5,7 @@ import 'package:shopsmart_users/consts/theme_data.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/order_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/providers/review_provider.dart';
 import 'package:shopsmart_users/providers/theme_provider.dart';
 import 'package:shopsmart_users/providers/user_provider.dart';
 import 'package:shopsmart_users/providers/viewed_recently_provider.dart';
@@ -100,6 +101,9 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) {
                 return OrderProvider();
               }),
+              ChangeNotifierProvider(create: (_) {
+                return ReviewProvider();
+              }),
             ],
             child: Consumer<ThemeProvider>(
                 builder: (context, themeProvider, child) {
@@ -113,8 +117,9 @@ class MyApp extends StatelessWidget {
                   routes: {
                     // na osnovu ovoga mozemo navigirati ka ostalim stranicama
                     RootScreen.routeName: (context) => const RootScreen(),
-                    ProductDetailsScreen.routName: (context) =>
-                        const ProductDetailsScreen(),
+                    ProductDetailsScreen.routName: (context) => ProductDetailsScreen(
+                          productId: ModalRoute.of(context)!.settings.arguments as String,
+                        ),
                     WishlistScreen.routName: (context) =>
                         const WishlistScreen(),
                     ViewedRecentlyScreen.routName: (context) =>

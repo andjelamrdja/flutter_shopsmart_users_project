@@ -39,11 +39,17 @@ class _ProductWidgetState extends State<ProductWidget> {
             padding: const EdgeInsets.all(0.0),
             child: GestureDetector(
               onTap: () async {
+                print("🔍 getCurrentProduct: $getCurrentProduct");
+                print(
+                    "📌 Product ID from getCurrentProduct: ${getCurrentProduct.productId}");
+
                 viewedProvider.addViewedProd(
                     productId: getCurrentProduct.productId);
                 await Navigator.pushNamed(
-                    context, ProductDetailsScreen.routName,
-                    arguments: getCurrentProduct.productId);
+                  context,
+                  ProductDetailsScreen.routName,
+                  arguments: getCurrentProduct.productId,
+                );
               },
               child: Column(
                 children: [
