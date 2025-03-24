@@ -12,6 +12,7 @@ import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/app_name_text.dart';
 import 'package:shopsmart_users/widgets/products/add_review_form.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
+import 'package:shopsmart_users/widgets/products/product_gallery.dart';
 import 'package:shopsmart_users/widgets/products/similar_products_tile.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 import 'package:shopsmart_users/widgets/title_text.dart';
@@ -85,6 +86,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     height: size.height * 0.38,
                     width: double.infinity,
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ProductGallery(imageUrls: [
+                    "assets/images/address_map.png",
+                    "assets/images/empty_search.png",
+                    "assets/images/forgot_password.jpg",
+                  ]),
                   SizedBox(
                     height: 20,
                   ),
@@ -224,7 +233,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 similarProducts: similarProducts),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(
+                          height: 20,
+                        ),
+
                         Align(
                           alignment: Alignment.centerLeft,
                           child: TitlesTextWidget(label: "Reviews"),
@@ -250,12 +262,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 return Column(
                                   children: reviews.map((review) {
                                     return ListTile(
-                                      title: Text(review.comment),
-                                      subtitle:
-                                          Text("Rating: ${review.rating}"),
+                                      leading: CircleAvatar(
+                                        backgroundImage: review
+                                                .profileImage.isNotEmpty
+                                            ? NetworkImage(review.profileImage)
+                                            : AssetImage(
+                                                    "assets/default_avatar.png")
+                                                as ImageProvider,
+                                      ),
+                                      title: Text(review.username,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: List.generate(
+                                              review.rating.toInt(),
+                                              (index) => Icon(Icons.star,
+                                                  color: Colors.amber,
+                                                  size: 20),
+                                            ),
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(review.comment),
+                                        ],
+                                      ),
                                       trailing: Text(review.createdAt
                                           .toLocal()
-                                          .toString()),
+                                          .toString()
+                                          .split(' ')[0]),
                                     );
                                   }).toList(),
                                 );
@@ -263,63 +300,43 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             );
                           },
                         ),
-                        // Consumer<ReviewProvider>(
-                        //   builder: (context, reviewProvider, child) {
-                        //     return FutureBuilder(
-                        //       future: reviewProvider
-                        //           .fetchReviews(productId), // Poziv API-ja
-                        //       builder: (context, snapshot) {
-                        //         if (snapshot.connectionState ==
-                        //             ConnectionState.waiting) {
-                        //           return CircularProgressIndicator(); // Prikaz loading indikatora
-                        //         } else if (snapshot.hasError) {
-                        //           return Text("Error loading reviews");
-                        //         } else {
-                        //           final reviews = reviewProvider
-                        //               .reviews; // Preuzimanje recenzija
-                        //           if (reviews.isEmpty) {
-                        //             return Text("No reviews yet.");
-                        //           }
-                        //           return Column(
-                        //             children: reviews.map((review) {
-                        //               return ListTile(
-                        //                 title: Text(review.comment),
-                        //                 subtitle:
-                        //                     Text("Rating: ${review.rating}"),
-                        //                 trailing: Text(review.createdAt
-                        //                     .toLocal()
-                        //                     .toString()),
-                        //               );
-                        //             }).toList(),
-                        //           );
+
+                        // FutureBuilder(
+                        //   future: _reviewsFuture,
+                        //   builder: (context, snapshot) {
+                        //     if (snapshot.connectionState ==
+                        //         ConnectionState.waiting) {
+                        //       return Center(child: CircularProgressIndicator());
+                        //     } else if (snapshot.hasError) {
+                        //       return Text("Error loading reviews");
+                        //     }
+
+                        //     return Consumer<ReviewProvider>(
+                        //       builder: (context, reviewProvider, child) {
+                        //         final reviews = reviewProvider.reviews;
+
+                        //         if (reviews.isEmpty) {
+                        //           return Text("No reviews yet.");
                         //         }
+
+                        //         return Column(
+                        //           children: reviews.map((review) {
+                        //             return ListTile(
+                        //               title: Text(review.comment),
+                        //               subtitle:
+                        //                   Text("Rating: ${review.rating}"),
+                        //               trailing: Text(review.createdAt
+                        //                   .toLocal()
+                        //                   .toString()),
+                        //             );
+                        //           }).toList(),
+                        //         );
                         //       },
                         //     );
                         //   },
-                        //   // builder: (context, reviewProvider, child) {
-                        //   //   final reviews = reviewProvider
-                        //   //       .reviews; // Ako provider već čuva listu
-
-                        //   //   if (reviews.isEmpty) {
-                        //   //     return CircularProgressIndicator();
-                        //   //   } else if (reviews.isEmpty) {
-                        //   //     return Text("No reviews yet.");
-                        //   //   } else {
-                        //   //     return Column(
-                        //   //       children: reviews.map((review) {
-                        //   //         return ListTile(
-                        //   //           title: Text(review.comment),
-                        //   //           subtitle: Text("Rating: ${review.rating}"),
-                        //   //           trailing: Text(
-                        //   //               review.createdAt.toLocal().toString()),
-                        //   //         );
-                        //   //       }).toList(),
-                        //   //     );
-                        //   //   }
-                        //   // },
                         // ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         AddReviewForm(
                           productId: getCurrentProduct.productId,
