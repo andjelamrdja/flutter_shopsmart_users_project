@@ -47,6 +47,9 @@ class _AddReviewFormState extends State<AddReviewForm> {
       setState(() {
         _selectedRating = 0;
       });
+      await reviewProvider.fetchReviews(widget.productId);
+      // Osvjezi UI
+      setState(() {});
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Review successfully added!")),

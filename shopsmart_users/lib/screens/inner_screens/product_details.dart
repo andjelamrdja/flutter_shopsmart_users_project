@@ -237,111 +237,212 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           height: 20,
                         ),
 
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TitlesTextWidget(label: "Reviews"),
-                        ),
-                        FutureBuilder(
-                          future: _reviewsFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Text("Error loading reviews");
-                            }
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TitlesTextWidget(label: "Reviews"),
+                            ),
+                            SizedBox(height: 10),
 
-                            return Consumer<ReviewProvider>(
-                              builder: (context, reviewProvider, child) {
-                                final reviews = reviewProvider.reviews;
-
-                                if (reviews.isEmpty) {
-                                  return Text("No reviews yet.");
+                            FutureBuilder(
+                              future: _reviewsFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Text("Error loading reviews");
                                 }
 
-                                return Column(
-                                  children: reviews.map((review) {
-                                    return ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: review
-                                                .profileImage.isNotEmpty
-                                            ? NetworkImage(review.profileImage)
-                                            : AssetImage(
-                                                    "assets/default_avatar.png")
-                                                as ImageProvider,
-                                      ),
-                                      title: Text(review.username,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                return Consumer<ReviewProvider>(
+                                  builder: (context, reviewProvider, child) {
+                                    final reviews = reviewProvider.reviews;
+
+                                    // Ako nema recenzija
+                                    if (reviews.isEmpty) {
+                                      return Column(
                                         children: [
-                                          Row(
-                                            children: List.generate(
-                                              review.rating.toInt(),
-                                              (index) => Icon(Icons.star,
-                                                  color: Colors.amber,
-                                                  size: 20),
+                                          Container(
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.star_border,
+                                                    color: Colors.amber,
+                                                    size: 24),
+                                                SizedBox(width: 5),
+                                                Text("No ratings yet",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ],
                                             ),
                                           ),
-                                          SizedBox(height: 4),
-                                          Text(review.comment),
+                                          SizedBox(height: 10),
+                                          // Text("No reviews yet.",
+                                          //     style: TextStyle(
+                                          //         fontSize: 14,
+                                          //         color: Colors.grey)),
                                         ],
-                                      ),
-                                      trailing: Text(review.createdAt
-                                          .toLocal()
-                                          .toString()
-                                          .split(' ')[0]),
+                                      );
+                                    }
+
+                                    // Izračunavanje prosječne ocjene
+                                    double avgRating = reviews.fold(0.0,
+                                            (sum, item) => sum + item.rating) /
+                                        reviews.length;
+
+                                    return Column(
+                                      children: [
+                                        // Prosječna ocjena
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              avgRating.toStringAsFixed(1),
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Row(
+                                              children: List.generate(
+                                                5,
+                                                (index) => Icon(
+                                                  index < avgRating.round()
+                                                      ? Icons.star
+                                                      : Icons.star_border,
+                                                  color: Colors.amber,
+                                                  size: 22,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 6),
+                                            Text(
+                                              "(${reviews.length} reviews)",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey[600]),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 16),
+
+                                        // Lista recenzija
+                                        Column(
+                                          children: reviews.map((review) {
+                                            return Card(
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 8, horizontal: 12),
+                                              elevation: 4,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(12),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: review
+                                                              .profileImage
+                                                              .isNotEmpty
+                                                          ? NetworkImage(review
+                                                              .profileImage)
+                                                          : AssetImage(
+                                                                  "assets/default_avatar.png")
+                                                              as ImageProvider,
+                                                      radius: 24,
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            review.username,
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 4),
+                                                          Row(
+                                                            children:
+                                                                List.generate(
+                                                              review.rating
+                                                                  .toInt(),
+                                                              (index) => Icon(
+                                                                  Icons.star,
+                                                                  color: Colors
+                                                                      .amber,
+                                                                  size: 18),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            review.comment,
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .grey[800]),
+                                                          ),
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            review.createdAt
+                                                                .toLocal()
+                                                                .toString()
+                                                                .split(' ')[0],
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ],
                                     );
-                                  }).toList(),
+                                  },
                                 );
                               },
-                            );
-                          },
+                            ),
+
+                            SizedBox(height: 20),
+
+                            // Forma za dodavanje recenzije
+                            AddReviewForm(
+                              productId: getCurrentProduct.productId,
+                              userId: user!.uid,
+                            ),
+                          ],
                         ),
 
-                        // FutureBuilder(
-                        //   future: _reviewsFuture,
-                        //   builder: (context, snapshot) {
-                        //     if (snapshot.connectionState ==
-                        //         ConnectionState.waiting) {
-                        //       return Center(child: CircularProgressIndicator());
-                        //     } else if (snapshot.hasError) {
-                        //       return Text("Error loading reviews");
-                        //     }
-
-                        //     return Consumer<ReviewProvider>(
-                        //       builder: (context, reviewProvider, child) {
-                        //         final reviews = reviewProvider.reviews;
-
-                        //         if (reviews.isEmpty) {
-                        //           return Text("No reviews yet.");
-                        //         }
-
-                        //         return Column(
-                        //           children: reviews.map((review) {
-                        //             return ListTile(
-                        //               title: Text(review.comment),
-                        //               subtitle:
-                        //                   Text("Rating: ${review.rating}"),
-                        //               trailing: Text(review.createdAt
-                        //                   .toLocal()
-                        //                   .toString()),
-                        //             );
-                        //           }).toList(),
-                        //         );
-                        //       },
-                        //     );
-                        //   },
-                        // ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        AddReviewForm(
-                          productId: getCurrentProduct.productId,
-                          userId: user!.uid,
-                        ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),

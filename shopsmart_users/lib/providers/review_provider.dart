@@ -84,10 +84,9 @@ class ReviewProvider with ChangeNotifier {
       await newReviewRef.set(newReview.toJson());
 
       notifyListeners();
-      print("Recenzija uspešno dodata!");
     } catch (error) {
-      print("Greška pri dodavanju recenzije: $error");
-      throw Exception("Neuspelo dodavanje recenzije. Pokušajte ponovo.");
+      print("Error while adding review: $error");
+      throw Exception("Unsuccessful rating. Try again.");
     }
   }
 
