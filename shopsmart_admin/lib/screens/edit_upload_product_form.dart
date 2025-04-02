@@ -39,6 +39,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
   String? productNetworkImage;
   bool _isLoading = false;
   String? productImageUrl;
+
   @override
   void initState() {
     if (widget.productModel != null) {
@@ -460,21 +461,23 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-                  DropdownButton<String>(
-                    value: _categoryValue,
-                    hint: const Text("Choose category"),
-                    items: categoryProvider.getCategories.map((category) {
-                      return DropdownMenuItem<String>(
-                        value: category.name,
-                        child: Text(category.name),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _categoryValue = newValue;
-                      });
-                    },
-                  ),
+
+                  // DropdownButton<String>(
+                  //   value: _categoryValue,
+                  //   hint: const Text("Choose category"),
+                  //   items: categoryProvider.getCategories.map((category) {
+                  //     return DropdownMenuItem<String>(
+                  //       value: category.name,
+                  //       child: Text(category.name),
+                  //     );
+                  //   }).toList(),
+                  //   onChanged: (String? newValue) {
+                  //     setState(() {
+                  //       _categoryValue = newValue;
+                  //     });
+                  //   },
+                  // ),
+
                   // CategoryDropdown(
                   //   onCategorySelected: (String name) {
                   //     setState(() {
@@ -492,6 +495,38 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
+                          SizedBox(
+                            width: 200,
+                            height: 40,
+                            child: DropdownButtonFormField<String>(
+                              value: _categoryValue,
+                              decoration: const InputDecoration(
+                                labelText: "Choose category",
+                                border:
+                                    OutlineInputBorder(),
+                              ),
+                              items: categoryProvider.getCategories
+                                  .map((category) {
+                                return DropdownMenuItem<String>(
+                                  value: category.name,
+                                  child: Text(category.name),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _categoryValue = newValue;
+                                });
+                              },
+                              validator: (value) {
+                                // Pozivamo funkciju validacije koja prikazuje dijalog ako nije odabrana kategorija
+                                return MyValidators.validateCategory(
+                                    value, context);
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
                           TextFormField(
                             controller: _titleController,
                             key: const ValueKey('Title'),
@@ -509,6 +544,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                 value: value,
                                 toBeReturnedString:
                                     "Please enter a valid title",
+                                // context: context,
                               );
                             },
                           ),
@@ -540,6 +576,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                     return MyValidators.uploadProdTexts(
                                       value: value,
                                       toBeReturnedString: "Price is missing",
+                                      // context: context,
                                     );
                                   },
                                 ),
@@ -564,6 +601,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                                     return MyValidators.uploadProdTexts(
                                       value: value,
                                       toBeReturnedString: "Quantity is missed",
+                                      // context: context,
                                     );
                                   },
                                 ),
@@ -585,6 +623,7 @@ class _EditOrUploadProductScreenState extends State<EditOrUploadProductScreen> {
                               return MyValidators.uploadProdTexts(
                                 value: value,
                                 toBeReturnedString: "Description is missed",
+                                // context: context,
                               );
                             },
                             onTap: () {},
