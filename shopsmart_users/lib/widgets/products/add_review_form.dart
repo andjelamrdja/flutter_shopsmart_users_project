@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/providers/review_provider.dart';
 
@@ -22,12 +23,14 @@ class _AddReviewFormState extends State<AddReviewForm> {
 
   void _submitReview() async {
     if (_selectedRating == 0 || _commentController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-          "Add comment and rating: ",
-        )),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //       content: Text(
+      //     "Add comment and rating: ",
+      //   )),
+      // );
+      Fluttertoast.showToast(msg: "Add comment and rating:");
+
       return;
     }
 

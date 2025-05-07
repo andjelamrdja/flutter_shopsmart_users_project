@@ -70,9 +70,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Consumer<UserProvider>(builder: (context, userProvider, child) {
       final userModel = userProvider.userModel;
 
-      if (userModel == null) {
-        return const Center(child: CircularProgressIndicator());
-      }
+      // if (userModel == null) {
+      //   return const Center(child: CircularProgressIndicator());
+      // }
       return Scaffold(
           appBar: AppBar(
             leading: Padding(

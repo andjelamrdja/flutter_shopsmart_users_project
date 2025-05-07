@@ -435,10 +435,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             SizedBox(height: 20),
 
                             // Forma za dodavanje recenzije
-                            AddReviewForm(
-                              productId: getCurrentProduct.productId,
-                              userId: user!.uid,
-                            ),
+                            // AddReviewForm(
+                            //   productId: getCurrentProduct.productId,
+                            //   userId: user!.uid,
+                            // ),
+                            if (user != null) ...[
+                              AddReviewForm(
+                                productId: getCurrentProduct.productId,
+                                userId: user!.uid,
+                              ),
+                            ] else ...[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Log in to leave a review",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
 

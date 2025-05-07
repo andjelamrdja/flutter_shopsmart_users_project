@@ -185,7 +185,35 @@ class _CartScreenState extends State<CartScreen> {
       cartProvider.clearLocalCart();
 
       // Notifikacija korisniku
-      Fluttertoast.showToast(msg: "Order placed successfully!");
+      Fluttertoast.showToast(msg: "Order placed successfully!"); //
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Row(
+      //       children: [
+      //         Icon(Icons.check_circle, color: Colors.white),
+      //         SizedBox(width: 12),
+      //         Expanded(
+      //           child: Text(
+      //             "Order placed successfully!",
+      //             style: TextStyle(
+      //               color: Colors.white,
+      //               fontWeight: FontWeight.w600,
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     backgroundColor: Colors.green.shade600, // prijatna nijansa zelene
+      //     behavior: SnackBarBehavior.floating,
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(16),
+      //     ),
+      //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      //     duration: Duration(seconds: 3),
+      //     elevation: 6,
+      //   ),
+      // );
     } catch (error) {
       await MyAppFunctions.showErrorOrWarningDialog(
         context: context,

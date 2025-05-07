@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/models/user_model.dart';
@@ -107,13 +108,16 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         newImageBytes: _imageBytes,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("User updated successfully!")),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("User updated successfully!")),
+      // );
+
+      Fluttertoast.showToast(msg: "User updated successfully!");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.toString()}")),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Error: ${e.toString()}")),
+      // );
+      Fluttertoast.showToast(msg: "Error: ${e.toString()}");
     }
   }
 
@@ -121,11 +125,13 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       await userProvider.sendEmailVerification();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Verification email sent!")));
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text("Verification email sent!")));
+      Fluttertoast.showToast(msg: "Verification email sent!");
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+      Fluttertoast.showToast(msg: "Error: ${e.toString()}");
     }
   }
 

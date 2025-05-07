@@ -11,9 +11,17 @@ class SimilarProductsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (similarProducts.isEmpty) {
-      return Center(
-        child: SubtitleTextWidget(label: "No similar products found."),
-      );
+      return Padding(
+          padding: const EdgeInsets.all(8.0),
+          // child: SubtitleTextWidget(label: "No similar products found."),
+          child: Text(
+            "No similar products found",
+            style: TextStyle(
+              fontSize: 16,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey[600],
+            ),
+          ));
     }
     return SizedBox(
       height: 180, // Visina celog slidera
